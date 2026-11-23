@@ -8,7 +8,7 @@ P.S.: Currently under active development — bugs may occur, so stay tuned!
 [![SwiftUI](https://img.shields.io/badge/Swift-SwiftUI-F05138?logo=swift&logoColor=white)](Trop)
 [![Player: mpv](https://img.shields.io/badge/player-mpv-691f69)](https://mpv.io)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE.txt)
-[![Release](https://img.shields.io/github/v/release/dmitrylol/WoofMusicPlus/releases?include_prereleases&label=release)](https://github.com/dmitrylol/WoofMusicPlus/releases)
+[![Release](https://img.shields.io/github/v/release/dmtr5140/WoofMusicPlus/releases?include_prereleases&label=release)](https://github.com/dmtr5140/WoofMusicPlus/releases)
 
 **Make your YT Music experience significantly better. Based on WoofMusic (a Trop fork).**
 It plays your favorite music ad-free and mixes tracks like a DJ.
