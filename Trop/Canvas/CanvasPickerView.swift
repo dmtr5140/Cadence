@@ -26,6 +26,7 @@ struct CanvasPickerView: View {
     @State private var isImporting = false
     @State private var errorMessage: String?
     @State private var hasPick = false
+    @State private var showsYouTube = false
 
     var body: some View {
         NavigationStack {
@@ -56,6 +57,18 @@ struct CanvasPickerView: View {
                     Text("Your Video")
                 } footer: {
                     Text("The video is copied into the app, so it keeps playing after the original is deleted.")
+                }
+
+                Section {
+                    Button {
+                        showsYouTube = true
+                    } label: {
+                        Label("Clip from YouTube…", systemImage: "play.rectangle")
+                    }
+                } header: {
+                    Text("YouTube")
+                } footer: {
+                    Text("Search a music video and pick the moment the clip loops.")
                 }
 
                 Section {
@@ -122,6 +135,16 @@ struct CanvasPickerView: View {
             }
         }
         .appSheetChrome()
+        .sheet(isPresented: $showsYouTube) {
+            NavigationStack {
+                YouTubeCanvasPicker(
+                    trackId: videoId,
+                    suggestedQuery: [title, artist].filter { !$0.isEmpty }.joined(separator: " "),
+                    onPicked: { hasPick = true }
+                )
+            }
+            .appSheetChrome()
+        }
     }
 
     private func candidateRow(_ candidate: CanvasCandidate) -> some View {

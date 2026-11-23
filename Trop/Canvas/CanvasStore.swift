@@ -11,10 +11,18 @@
 import Foundation
 
 enum CanvasStore {
+    /// A moment of a music video: the clip id plus the window to loop.
+    struct YouTubePick: Codable, Equatable {
+        var clipId: String
+        var start: Double
+        var length: Double
+    }
+
     /// One track's choice. `localFile` is a file name inside `directory`.
     struct Pick: Codable {
         var remote: URL?
         var localFile: String?
+        var youTube: YouTubePick?
     }
 
     private static let defaultsKey = "canvas.picks.v2"
@@ -33,7 +41,28 @@ enum CanvasStore {
     }
 
     static func hasPick(for videoId: String) -> Bool {
-        url(for: videoId) != nil
+        url(for: videoId) != nil || youTubePick(for: videoId) != nil
+    }
+
+    /// The YouTube moment picked for a track, if any. The link is not stored:
+    /// it expires after a few hours, so `CanvasYouTube` resolves it on playback.
+    static func youTubePick(for videoId: String) -> YouTubePick? {
+        guard !videoId.isEmpty else { return nil }
+        return picks()[videoId]?.youTube
+    }
+
+    static func setYouTube(_ pick: YouTubePick, for videoId: String) {
+        guard !videoId.isEmpty else { return }
+        var map = picks()
+        var entry = map[videoId] ?? Pick()
+        if let old = entry.localFile {
+            try? FileManager.default.removeItem(at: directory.appendingPathComponent(old))
+        }
+        entry.localFile = nil
+        entry.remote = nil
+        entry.youTube = pick
+        map[videoId] = entry
+        save(map)
     }
 
     // MARK: - Writing
@@ -44,6 +73,7 @@ enum CanvasStore {
         var pick = map[videoId] ?? Pick()
         if let old = pick.localFile { try? FileManager.default.removeItem(at: directory.appendingPathComponent(old)) }
         pick.localFile = nil
+        pick.youTube = nil
         pick.remote = url
         map[videoId] = pick
         save(map)
@@ -66,6 +96,7 @@ enum CanvasStore {
 
         pick.localFile = file
         pick.remote = nil
+        pick.youTube = nil
         map[videoId] = pick
         save(map)
         return destination
