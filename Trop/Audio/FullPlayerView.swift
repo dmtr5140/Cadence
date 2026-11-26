@@ -77,54 +77,29 @@ struct FullPlayerView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            ZStack {
-                playerBackground
-                canvasBackdropLayer
-                artworkLayer(geometry)
-                playerContent(geometry)
+            playerLifecycle(geometry)
+        }
+    }
 
-            }
-            .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
-            // An overlay, so its taller-than-screen size does not push the player down.
-            // Sized and offset like the artwork, not with ignoresSafeArea: the safe
-            // area shrinks while the player is pulled down and would slide the
-            // animation away from the player.
-            // A few points wider than the player on each side, so no edge of the
-            // screen is left without the animation.
-            .overlay(alignment: .top) { sleepEndedOverlay(geometry) }
-            .overlay { radioBloomLayer }
-            .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showQueue)
-            .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showLyrics)
-            .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showsKaraoke)
-            .animation(reduceMotion ? .easeInOut(duration: 0.15) : .spring(duration: 0.42, bounce: 0.22), value: showsSpeedDial)
-            .offset(y: pullDistance)
-            .gesture(pullToDismiss(height: geometry.size.height))
-            // Outside the pull offset; it is torn down with the player.
-            .overlay { lyricsScreen }
-            .overlay { canvasStage }
-            .onReceive(NotificationCenter.default.publisher(for: .canvasStageRequested)) { note in
-                handleCanvasStageRequest(note)
-            }
-            .overlay { fullscreenCoverLayer }
+    /// What the player does when the track or a panel changes. Split off from
+    /// the body: the whole chain in one expression pushed type checking past
+    /// its time budget.
+    private func playerLifecycle(_ geometry: GeometryProxy) -> some View {
+        playerInteractive(geometry)
             .onChange(of: np.videoId) { oldValue, newValue in
                 handleTrackChange(from: oldValue, to: newValue)
             }
             .onChange(of: np.queueSongs.count) { _, _ in
-                np.preloadNeighborArtwork()
-                preloadLyrics()
+                handleQueueCountChange()
             }
             .onChange(of: np.queueIndex) { _, _ in
-                artworkDragOffset = 0
-                np.preloadNeighborArtwork()
+                handleQueueIndexChange()
             }
             .onChange(of: showQueue) { _, newValue in
-                if newValue {
-                    showLyrics = false
-                    np.preloadNeighborArtwork()
-                }
+                handleShowQueue(newValue)
             }
             .onChange(of: showLyrics) { _, newValue in
-                if newValue { showQueue = false }
+                handleShowLyrics(newValue)
             }
             .task { np.preloadNeighborArtwork() }
             .task(id: np.videoId) { await loadCurrentLyrics() }
@@ -139,7 +114,58 @@ struct FullPlayerView: View {
                 Color.clear
                     .routerSheet()
             )
+    }
+
+    /// Pull-to-dismiss, the immersive screens and the panels.
+    private func playerInteractive(_ geometry: GeometryProxy) -> some View {
+        playerVisuals(geometry)
+            .offset(y: pullDistance)
+            .gesture(pullToDismiss(height: geometry.size.height))
+            // Outside the pull offset; it is torn down with the player.
+            .overlay { lyricsScreen }
+            .overlay { canvasStage }
+            .onReceive(NotificationCenter.default.publisher(for: .canvasStageRequested)) { note in
+                handleCanvasStageRequest(note)
+            }
+            .overlay { fullscreenCoverLayer }
+    }
+
+    /// The layers themselves plus the animations that follow the panel state.
+    private func playerVisuals(_ geometry: GeometryProxy) -> some View {
+        ZStack {
+            playerBackground
+            canvasBackdropLayer
+            artworkLayer(geometry)
+            playerContent(geometry)
         }
+        .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
+        .overlay(alignment: .top) { sleepEndedOverlay(geometry) }
+        .overlay { radioBloomLayer }
+        .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showQueue)
+        .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showLyrics)
+        .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showsKaraoke)
+        .animation(reduceMotion ? .easeInOut(duration: 0.15) : .spring(duration: 0.42, bounce: 0.22), value: showsSpeedDial)
+    }
+
+    private func handleQueueCountChange() {
+        np.preloadNeighborArtwork()
+        preloadLyrics()
+    }
+
+    private func handleQueueIndexChange() {
+        artworkDragOffset = 0
+        np.preloadNeighborArtwork()
+    }
+
+    private func handleShowQueue(_ value: Bool) {
+        if value {
+            showLyrics = false
+            np.preloadNeighborArtwork()
+        }
+    }
+
+    private func handleShowLyrics(_ value: Bool) {
+        if value { showQueue = false }
     }
 
     /// The gradient behind everything: solid black, the cover's palette in card
