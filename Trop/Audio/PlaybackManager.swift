@@ -200,10 +200,29 @@ actor PlaybackManager {
         request.options.preferredFormat = preferredFormat
         request.options.audioQuality = SettingsStore.shared.audioQuality
         request.options.downloadQuality = SettingsStore.shared.downloadQuality
-        return try await StreamFallback.resolveFirstValid(
-            request,
-            using: InnerTubeClient.tropShared,
-            providers: .tropLive
-        )
+        do {
+            let result = try await StreamFallback.resolveFirstValid(
+                request,
+                using: InnerTubeClient.tropShared,
+                providers: .tropLive
+            )
+            if !forDownload {
+                await MainActor.run { Substitutions.shared.clear(videoId) }
+            }
+            return result
+        } catch {
+            // YouTube refused this track: region, age gate, deleted video. Before
+            // giving up, look for the same song on a service that streams on its
+            // own. The badge in the UI says when that happened.
+            guard !forDownload,
+                  let match = await SourceFallback.find(
+                      title: NowPlaying.shared.title,
+                      artist: NowPlaying.shared.displayArtist,
+                      duration: NowPlaying.shared.duration
+                  )
+            else { throw error }
+            await MainActor.run { Substitutions.shared.note(match.source, for: videoId) }
+            return match.stream.playbackResult(key: match.key)
+        }
     }
 }
