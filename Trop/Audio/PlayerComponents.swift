@@ -155,7 +155,7 @@ struct PlayerPlayPauseButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(IconPressStyle(disc: .white))
-        .frame(width: 80, height: 80)
+        .frame(width: 56, height: 56)
         .accessibilityLabel(isPlaying ? "Pause" : "Play")
     }
 }
@@ -176,7 +176,9 @@ struct PlaybackControlsRow: View {
     var body: some View {
         // A centered group with fixed gaps, not spread over the whole width.
         // Wider than the default row: Apple Music leaves the play button air.
-        HStack(spacing: 40) {
+        // BitChord: play 56 pt with a 48 pt glyph, skips 48 pt, the whole row
+        // kept narrow so the buttons do not run to the screen edges.
+        HStack(spacing: 36) {
             Button {
                 previousAnimation &+= 1
                 onPrevious()
@@ -215,7 +217,7 @@ private struct PlayerSkipButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .frame(width: 68, height: 68)
+            .frame(width: 48, height: 48)
             .background(.white.opacity(configuration.isPressed ? 0.12 : 0), in: Circle())
             .contentShape(Circle())
             .scaleEffect(reduceMotion || !configuration.isPressed ? 1 : 0.85)
@@ -240,7 +242,7 @@ struct SecondaryActionsRow: View {
                         .foregroundStyle(showLyrics.wrappedValue ? .white : .white.opacity(0.7))
                         .glyphMotion(showLyrics.wrappedValue ? .bubblePop : nil, trigger: showLyrics.wrappedValue)
                         .frame(width: 44, height: 44)
-                        .background(showLyrics.wrappedValue ? Circle().fill(.white.opacity(0.15)) : Circle().fill(.clear))
+                        .background(.clear)
                 }
                 .buttonStyle(IconPressStyle(disc: .white))
                 .accessibilityLabel(showLyrics.wrappedValue ? "Close lyrics" : "Open lyrics")
@@ -260,7 +262,7 @@ struct SecondaryActionsRow: View {
                         .foregroundStyle(showQueue ? .white : .white.opacity(0.7))
                         .glyphMotion(showQueue ? .stackIn : nil, trigger: showQueue)
                         .frame(width: 44, height: 44)
-                        .background(showQueue ? Circle().fill(.white.opacity(0.15)) : Circle().fill(.clear))
+                        .background(.clear)
                 }
                 .buttonStyle(IconPressStyle(disc: .white))
                 .accessibilityLabel("Queue")
@@ -274,7 +276,7 @@ struct SecondaryActionsRow: View {
                         .contentTransition(.symbolEffect(.replace))
                         .glyphMotion(isRepeatOn ? .repeatOneTurn : .repeatTurn, trigger: isRepeatOn)
                         .frame(width: 22, height: 22)
-                        .background(isRepeatOn ? Circle().fill(.white.opacity(0.15)) : Circle().fill(.clear))
+                        .background(.clear)
                 }
                 .buttonStyle(IconPressStyle(disc: .white))
                 .sensoryFeedback(.selection, trigger: isRepeatOn)
@@ -284,7 +286,7 @@ struct SecondaryActionsRow: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .padding(.vertical, 16)
+        .padding(.vertical, 8)
     }
 }
 
