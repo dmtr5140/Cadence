@@ -130,8 +130,9 @@ struct ServiceAccountsView: View {
     private func status(for account: ServiceAccount) -> String {
         guard let session = session(for: account), session.isConnected else { return "Не подключён" }
         if let name = session.accountName, !name.isEmpty { return "Подключён · \(name)" }
-        if account == .youtube, let name = AccountState.shared.accountName, !name.isEmpty {
-            return "Подключён · \(name)"
+        if account == .youtube {
+            let name = AccountState.shared.accountName
+            if !name.isEmpty, name != "Guest" { return "Подключён · \(name)" }
         }
         return "Подключён"
     }
