@@ -26,10 +26,9 @@ struct ProgressBar: View {
             let trackInset: CGFloat = isScrubbing ? 0 : 9
             let trackWidth = max(0, width - trackInset * 2)
             let elapsedWidth = max(0, min(trackWidth, trackWidth * CGFloat(progress)))
-            // Apple Music keeps the bar hairline-thin and only thickens a little
-            // under the finger, with a small round knob as the target.
-            let trackHeight: CGFloat = isScrubbing ? 6 : 4
-            let thumbSize: CGFloat = isScrubbing ? 12 : 8
+            // Apple's bar is a plain hairline with no knob, and it thickens a
+            // little only while the finger is on it.
+            let trackHeight: CGFloat = isScrubbing ? 8 : 4
 
             ZStack(alignment: .leading) {
                 // Remaining track (unwatched)
@@ -41,12 +40,6 @@ struct ProgressBar: View {
                 Capsule()
                     .fill(.white)
                     .frame(width: elapsedWidth, height: trackHeight)
-
-                // Knob at the end of the fill, the only part that grows on drag.
-                Circle()
-                    .fill(.white)
-                    .frame(width: thumbSize, height: thumbSize)
-                    .offset(x: max(0, elapsedWidth - thumbSize / 2))
             }
             .padding(.horizontal, trackInset)
             .animation(.easeInOut(duration: reduceMotion ? 0.12 : (isScrubbing ? 0.4 : 0.3)), value: isScrubbing)

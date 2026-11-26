@@ -283,7 +283,7 @@ struct FullPlayerView: View {
                     LinearGradient(
                         stops: [
                             .init(color: .white, location: 0),
-                            .init(color: .white, location: 0.62),
+                            .init(color: .white, location: 0.86),
                             .init(color: .clear, location: 1)
                         ],
                         startPoint: .top,
@@ -654,8 +654,8 @@ struct FullPlayerView: View {
             PlayerTitleBlock(
                 title: np.title,
                 artist: np.displayArtist,
-                spacing: 1,
-                titleFont: .title2.weight(.bold),
+                spacing: 2,
+                titleFont: .title3.weight(.semibold),
                 onArtistTap: { openCurrentArtist() }
             )
             .disabled(isOpeningArtist)
@@ -813,9 +813,25 @@ struct FullPlayerView: View {
                 .shadow(color: .black.opacity(0.35), radius: 24, y: 12)
                 .frame(width: size.width, height: size.height)
         } else {
-            cover(for: song)
-                .frame(width: size.width, height: size.height)
-                .clipped()
+            // Apple's square sleeve: rounded, lifted by a shadow, with a blurred
+            // copy of itself glowing behind, and a slight shrink while paused.
+            let side = max(0, min(size.width - 48, size.height))
+            ZStack {
+                cover(for: song)
+                    .frame(width: side, height: side)
+                    .scaleEffect(0.96)
+                    .blur(radius: 20)
+                    .saturation(1.8)
+                    .opacity(0.4)
+                    .offset(y: 8)
+                cover(for: song)
+                    .frame(width: side, height: side)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .shadow(color: .black.opacity(0.28), radius: 18, y: 10)
+            }
+            .frame(width: size.width, height: size.height)
+            .scaleEffect(np.isPlaying ? 1 : 0.92)
+            .animation(reduceMotion ? nil : .spring(response: 0.45, dampingFraction: 0.72), value: np.isPlaying)
         }
     }
 
@@ -912,7 +928,7 @@ private struct PlayerProgressSection: View {
 
             HStack {
                 Text(DurationFormat.playbackTime(elapsed))
-                    .font(.caption2.monospacedDigit())
+                    .font(.system(size: 11, weight: .medium).monospacedDigit())
                     .foregroundStyle(.white.opacity(0.6))
 
                 Spacer()
@@ -921,7 +937,7 @@ private struct PlayerProgressSection: View {
                 Text(rate == 1
                     ? DurationFormat.playbackTime(np.duration)
                     : "−\(DurationFormat.playbackTime(max(0, np.duration - elapsed) / rate))")
-                    .font(.caption2.monospacedDigit())
+                    .font(.system(size: 11, weight: .medium).monospacedDigit())
                     .foregroundStyle(.white.opacity(0.6))
             }
             // The dial takes the chip's place while open; its header closes it.
