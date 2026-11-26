@@ -27,6 +27,16 @@ struct SettingsView: View {
             }
 
             Section {
+                SettingsNavigationRow("Sources", icon: "square.stack.3d.up") {
+                    SourcesSettingsView()
+                }
+            } header: {
+                Text("Music Services")
+            } footer: {
+                Text("SoundCloud и Яндекс Музыка играют напрямую. Spotify, VK и Apple Music пока только как каталог или импорт.")
+            }
+
+            Section {
                 SettingsNavigationRow("Player", icon: "play.circle") {
                     PlayerSettingsView()
                 }

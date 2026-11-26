@@ -188,6 +188,14 @@ actor PlaybackManager {
     }
 
     private func resolveFromNetwork(videoId: String, preferredFormat: Format?, forDownload: Bool) async throws -> PlaybackResult {
+        // A SoundCloud or Yandex row carries its own id, prefixed with the
+        // service. Those services hand over a URL directly, so YouTube is
+        // never asked about them.
+        if !forDownload, await NativeStreamTable.shared.canHandle(videoId) {
+            let stream = try await NativeStreamTable.shared.stream(for: videoId)
+            return stream.playbackResult(key: videoId)
+        }
+
         var request = forDownload ? StreamResolveRequest.download(videoId: videoId) : .playback(videoId: videoId)
         request.options.preferredFormat = preferredFormat
         request.options.audioQuality = SettingsStore.shared.audioQuality
