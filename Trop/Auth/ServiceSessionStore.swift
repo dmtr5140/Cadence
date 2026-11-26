@@ -26,7 +26,7 @@ enum ServiceAccount: String, CaseIterable, Identifiable {
         case .yandex: return "Яндекс Музыка"
         case .spotify: return "Spotify"
         case .vk: return "VK Музыка"
-        case .appleMusic: return "Apple Music"
+        case .appleMusic: return "Apple Music · эксперимент"
         }
     }
 
@@ -38,7 +38,7 @@ enum ServiceAccount: String, CaseIterable, Identifiable {
         case .yandex: return "Каталог читается всегда, звук — только с Яндекс Плюсом."
         case .spotify: return "Каталог и импорт. Звука нет: Spotify не отдаёт поток никому, кроме своих плееров."
         case .vk: return "Каталог и свои списки. Сторонним приложениям VK закрыл audio API."
-        case .appleMusic: return "Полное воспроизведение через MusicKit, но играет системный плеер, а не наш."
+        case .appleMusic: return "ЭКСПЕРИМЕНТАЛЬНО. Полное воспроизведение через MusicKit, но играет системный плеер, а не наш."
         }
     }
 }

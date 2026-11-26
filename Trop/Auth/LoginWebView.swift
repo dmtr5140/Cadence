@@ -57,11 +57,12 @@ final class WebLoginController: UIViewController {
 
         let delegate = LoginNavigationDelegate(model: model)
         self.delegate = delegate
+        delegate.presenter = self
 
         let config = WKWebViewConfiguration()
         let webView = WKWebView(frame: .zero, configuration: config)
         // Google serves a cookie-incomplete login flow to mobile user agents.
-        webView.customUserAgent = LoginWebviewHarvest.userAgent
+        webView.customUserAgent = LoginBrowserProfile.current.userAgent
         webView.navigationDelegate = delegate
         view = webView
 
@@ -79,7 +80,39 @@ private final class LoginNavigationDelegate: NSObject, WKNavigationDelegate {
         self.model = model
     }
 
+    /// Set by the controller so a refusal can be explained, not dead-ended.
+    weak var presenter: UIViewController?
+
+    /// Google answered "this browser or app may not be secure". Offer the next
+    /// profile and reload; the same page in another browser often goes through.
+    func promptAnotherBrowser(_ webView: WKWebView) {
+        let next = LoginBrowserProfile.next(after: LoginBrowserProfile.current)
+        Task { @MainActor [weak self, weak webView] in
+            guard let self, let presenter = self.presenter, let webView else { return }
+            let alert = UIAlertController(
+                title: "Google не пускает этот браузер",
+                message: "Страница «браузер или приложение может быть небезопасным». Попробуем ещё раз, притворившись другим браузером: \(next.title).",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "Попробовать: \(next.title)", style: .default) { _ in
+                LoginBrowserProfile.current = next
+                webView.customUserAgent = next.userAgent
+                if let url = webView.url {
+                    webView.load(URLRequest(url: url))
+                } else {
+                    webView.reload()
+                }
+            })
+            alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
+            presenter.present(alert, animated: true)
+        }
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        if LoginBrowserProfile.isRejected(webView.url) {
+            promptAnotherBrowser(webView)
+            return
+        }
         guard let url = webView.url, url.host?.contains("music.youtube.com") == true else {
             return
         }

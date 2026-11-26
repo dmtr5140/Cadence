@@ -14,6 +14,7 @@ import UniformTypeIdentifiers
 struct ServiceAccountsView: View {
     @State private var active: ServiceAccount?
     @State private var showsCookiesImporter = false
+    @State private var showsYouTubeLogin = false
     @State private var message: String?
     @State private var isImporting = false
 
@@ -49,6 +50,12 @@ struct ServiceAccountsView: View {
 
                     if account == .youtube {
                         Button {
+                            AccountState.shared.loginModel.isAddingAccount = true
+                            showsYouTubeLogin = true
+                        } label: {
+                            Label("Войти в YouTube", systemImage: "person.crop.circle.badge.checkmark")
+                        }
+                        Button {
                             showsCookiesImporter = true
                         } label: {
                             Label("Импортировать cookies.txt", systemImage: "doc.badge.arrow.up")
@@ -65,11 +72,27 @@ struct ServiceAccountsView: View {
             }
 
             Section {
-                Text("Google не даёт войти в аккаунт из встроенного браузера. Открой youtube.com в Safari или на компьютере, войди, выгрузи cookies расширением «Get cookies.txt», затем вернись сюда и импортируй файл. Сессия обновляется сама и живёт месяцами.")
+                Text("Сначала попробуй «Войти в YouTube»: приложение подставляет десктопный Safari и, если Google всё равно отвечает «браузер небезопасен», предлагает другой браузер в один тап.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                Text("Если Google упирается во всех профилях — импортируй cookies.txt. Файл можно выгрузить и на самом iPhone: войди в youtube.com в Safari, затем в приложении «Файлы» открой экспорт из расширения «Get cookies.txt». Компьютер не обязателен.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             } header: {
                 Text("Почему через файл")
+            }
+        }
+        .sheet(isPresented: $showsYouTubeLogin) {
+            NavigationStack {
+                LoginWebView(model: AccountState.shared.loginModel)
+                    .ignoresSafeArea()
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Закрыть") { showsYouTubeLogin = false }
+                        }
+                    }
             }
         }
         .navigationTitle("Аккаунты сервисов")
