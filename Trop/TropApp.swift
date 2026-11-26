@@ -77,6 +77,7 @@ struct TropApp: App {
                 .preferredColorScheme(settings.preferredColorScheme)
                 .tint(settings.accentColor)
                 .environment(settings)
+                .environment(SourceRegistry.shared)
                 .environment(\.downloadManager, DownloadManager.shared)
                 .recapStory(isPresented: $showsRecap, interval: RecapService.monthToDate())
                 .onOpenURL(perform: openWidgetLink)
