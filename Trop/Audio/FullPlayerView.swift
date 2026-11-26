@@ -142,7 +142,18 @@ struct FullPlayerView: View {
         .overlay(alignment: .top) { sleepEndedOverlay(geometry) }
         .overlay { radioBloomLayer }
         .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showQueue)
-        .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showLyrics)
+        .animation(
+            reduceMotion
+                ? .easeInOut(duration: 0.15)
+                : .spring(response: 0.42, dampingFraction: 0.9),
+            value: showLyrics
+        )
+        .animation(
+            reduceMotion
+                ? .easeInOut(duration: 0.15)
+                : .easeInOut(duration: 0.45),
+            value: showsCanvasStage
+        )
         .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showsKaraoke)
         .animation(reduceMotion ? .easeInOut(duration: 0.15) : .spring(duration: 0.42, bounce: 0.22), value: showsSpeedDial)
     }
@@ -495,7 +506,16 @@ struct FullPlayerView: View {
             }
             .environment(\.colorScheme, .dark)
             .ignoresSafeArea(edges: .bottom)
-            .transition(reduceMotion ? .opacity : .move(edge: .bottom))
+            // The lyrics slide up from the bottom while the player under
+            // them steps back, so the two read as one move.
+            .transition(
+                reduceMotion
+                    ? .opacity
+                    : .asymmetric(
+                        insertion: .move(edge: .bottom).combined(with: .opacity),
+                        removal: .opacity
+                    )
+            )
             .accessibilityAction(.escape) { closePanelOrPlayer() }
         }
     }
@@ -546,6 +566,14 @@ struct FullPlayerView: View {
         preloadLyrics()
     }
 
+    /// The stage fades out as one move whether it left on a tap or on its
+    /// own after the five-second beat.
+    private func dismissCanvasStage() {
+        withAnimation(reduceMotion ? .easeInOut(duration: 0.15) : .easeInOut(duration: 0.45)) {
+            showsCanvasStage = false
+        }
+    }
+
     @ViewBuilder
     private var canvasStage: some View {
         if showsCanvasStage {
@@ -554,7 +582,7 @@ struct FullPlayerView: View {
                 title: np.title,
                 artist: np.displayArtist,
                 album: np.albumTitle.isEmpty ? nil : np.albumTitle,
-                onClose: { showsCanvasStage = false }
+                onClose: { dismissCanvasStage() }
             ) {
                 PlayerLikeButton(isLiked: isLiked, flavor: currentLikeFlavor) {
                     guard let song = np.queueSongs.indices.contains(np.queueIndex) ? np.queueSongs[np.queueIndex] : nil else { return }
@@ -563,7 +591,7 @@ struct FullPlayerView: View {
             }
             .transition(.opacity)
             .zIndex(20)
-            .onChange(of: np.videoId) { _, _ in showsCanvasStage = false }
+            .onChange(of: np.videoId) { _, _ in dismissCanvasStage() }
         }
     }
 

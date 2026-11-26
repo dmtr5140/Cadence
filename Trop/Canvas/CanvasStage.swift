@@ -15,6 +15,9 @@ struct CanvasStage<Accessory: View>: View {
     let artist: String
     let album: String?
     let onClose: () -> Void
+    /// Apple Music shows the clip for a heartbeat and then lets go. Nil keeps
+    /// the stage until the user taps.
+    var autoHideAfter: TimeInterval? = 5
     @ViewBuilder var accessory: () -> Accessory
 
     var body: some View {
@@ -61,6 +64,14 @@ struct CanvasStage<Accessory: View>: View {
         }
         .contentShape(Rectangle())
         .onTapGesture { onClose() }
+        // The timer dies with the view, so a tap and the timer never both
+        // fire. A nil interval keeps the stage up until the tap.
+        .task {
+            guard let autoHideAfter else { return }
+            try? await Task.sleep(for: .seconds(autoHideAfter))
+            guard !Task.isCancelled else { return }
+            onClose()
+        }
         .accessibilityAction(.escape) { onClose() }
         // The stage is the whole screen: the clock, the battery and the home
         // bar would sit on top of the clip.
