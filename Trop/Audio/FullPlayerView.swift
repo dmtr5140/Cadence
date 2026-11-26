@@ -53,6 +53,8 @@ struct FullPlayerView: View {
     @State private var showsFullscreenCover = false
     /// The Canvas alone: no cover, no controls, just the clip.
     @State private var showsCanvasStage = false
+    /// The stage is shrinking into the sleeve; dismissal animates this, not the flag.
+    @State private var canvasClosing = false
     /// Where the current cover sits on screen, for the full-screen cover to
     /// grow from. A plain box, not state: the swipe and pull move the cover
     /// every frame and must not redraw the player.
@@ -123,7 +125,7 @@ struct FullPlayerView: View {
             .gesture(pullToDismiss(height: geometry.size.height))
             // Outside the pull offset; it is torn down with the player.
             .overlay { lyricsScreen }
-            .overlay { canvasStage }
+            .overlay { canvasStage(in: geometry.size) }
             .onReceive(NotificationCenter.default.publisher(for: .canvasStageRequested)) { note in
                 handleCanvasStageRequest(note)
             }
@@ -548,6 +550,7 @@ struct FullPlayerView: View {
     /// queue and of every list.
     private func handleCanvasStageRequest(_ note: Notification) {
         guard let id = note.object as? String, id == np.videoId else { return }
+        canvasClosing = false
         withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.22)) {
             showsCanvasStage = true
         }
@@ -566,17 +569,32 @@ struct FullPlayerView: View {
         preloadLyrics()
     }
 
-    /// The stage fades out as one move whether it left on a tap or on its
-    /// own after the five-second beat.
+    /// A tap and the five-second beat take the same road: the clip collapses
+    /// onto the artwork and only then is the stage torn down.
     private func dismissCanvasStage() {
-        withAnimation(reduceMotion ? .easeInOut(duration: 0.15) : .easeInOut(duration: 0.45)) {
+        guard showsCanvasStage, !canvasClosing else { return }
+        withAnimation(reduceMotion ? .easeInOut(duration: 0.15) : .spring(response: 0.4, dampingFraction: 0.88)) {
+            canvasClosing = true
+        }
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(reduceMotion ? 160 : 400))
             showsCanvasStage = false
+            canvasClosing = false
         }
     }
 
     @ViewBuilder
-    private var canvasStage: some View {
+    private func canvasStage(in size: CGSize) -> some View {
         if showsCanvasStage {
+            let cover = coverFrame.rect
+            let hasCover = cover.width > 8 && size.width > 8
+            let shrink = hasCover ? max(0.18, min(1, cover.width / size.width)) : 0.8
+            let anchor = hasCover
+                ? UnitPoint(
+                    x: min(1, max(0, cover.midX / size.width)),
+                    y: min(1, max(0, cover.midY / size.height))
+                  )
+                : .center
             CanvasStage(
                 videoId: np.videoId ?? "",
                 title: np.title,
@@ -584,11 +602,19 @@ struct FullPlayerView: View {
                 album: np.albumTitle.isEmpty ? nil : np.albumTitle,
                 onClose: { dismissCanvasStage() }
             ) {
-                PlayerLikeButton(isLiked: isLiked, flavor: currentLikeFlavor) {
-                    guard let song = np.queueSongs.indices.contains(np.queueIndex) ? np.queueSongs[np.queueIndex] : nil else { return }
-                    Task { await likeStore.toggle(song: song) }
+                HStack(spacing: 14) {
+                    PlayerLikeButton(isLiked: isLiked, flavor: currentLikeFlavor) {
+                        guard let song = np.queueSongs.indices.contains(np.queueIndex) ? np.queueSongs[np.queueIndex] : nil else { return }
+                        Task { await likeStore.toggle(song: song) }
+                    }
+                    if np.queueSongs.indices.contains(np.queueIndex) {
+                        PlayerSongMenu(song: np.queueSongs[np.queueIndex])
+                            .frame(width: 36, height: 36)
+                    }
                 }
             }
+            .scaleEffect(canvasClosing ? shrink : 1, anchor: anchor)
+            .opacity(canvasClosing ? 0 : 1)
             .transition(.opacity)
             .zIndex(20)
             .onChange(of: np.videoId) { _, _ in dismissCanvasStage() }

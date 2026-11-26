@@ -35,7 +35,7 @@ struct CanvasStage<Accessory: View>: View {
             .ignoresSafeArea()
 
             LinearGradient(
-                colors: [.clear, .black.opacity(0.7)],
+                colors: [.clear, .black.opacity(0.55)],
                 startPoint: .center,
                 endPoint: .bottom
             )
@@ -43,14 +43,15 @@ struct CanvasStage<Accessory: View>: View {
             .allowsHitTesting(false)
 
             HStack(alignment: .bottom, spacing: 12) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 1) {
                     Text(title)
-                        .font(.title3.weight(.bold))
+                        .font(.subheadline.weight(.semibold))
                         .lineLimit(2)
+                        .truncationMode(.tail)
                         .multilineTextAlignment(.leading)
                     Text(artist)
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.72))
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.75))
                         .lineLimit(1)
                 }
 
@@ -59,8 +60,8 @@ struct CanvasStage<Accessory: View>: View {
                 accessory()
             }
             .foregroundStyle(.white)
-            .padding(.horizontal, 24)
-            .padding(.bottom, 44)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 34)
         }
         .contentShape(Rectangle())
         .onTapGesture { onClose() }
