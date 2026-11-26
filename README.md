@@ -1,17 +1,18 @@
 <div align="center">
 
-<img src=".github/assets/banner.svg" width="100%" alt="Cadence: Better YouTube Music, native on iPhone" /> 
+<img src=".github/assets/banner.svg" width="100%" alt="Cadence: YouTube Music, with the lyrics it deserved" />
 
-P.S.: Currently under active development — bugs may occur, so stay tuned!
+**Version 2.0 · under active development — bugs may occur**
 
 [![iOS 26+](https://img.shields.io/badge/iOS-26%2B-black?logo=apple)](#install)
 [![SwiftUI](https://img.shields.io/badge/Swift-SwiftUI-F05138?logo=swift&logoColor=white)](Trop)
 [![Player: mpv](https://img.shields.io/badge/player-mpv-691f69)](https://mpv.io)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE.txt)
-[![Release](https://img.shields.io/github/v/release/dmtr5140/WoofMusicPlus/releases?include_prereleases&label=release)](https://github.com/dmtr5140/WoofMusicPlus/releases)
+[![Release](https://img.shields.io/github/v/release/dmtr5140/Cadence?include_prereleases&label=release)](https://github.com/dmtr5140/Cadence/releases)
 
-**Cadence — make your YT Music experience significantly better. Based on WoofMusic (a Trop fork).**
-It plays your favorite music ad-free and mixes tracks like a DJ.
+A YouTube Music client for iPhone. Ad-free playback, Apple-grade lyrics with syllable
+timing and karaoke, Canvas behind the player, and a search that reaches SoundCloud and
+Yandex Music as well.
 
 <img src=".github/assets/1.png" width="31%" alt="Home" />&nbsp;
 <img src=".github/assets/2.png" width="31%" alt="Player" />&nbsp;
@@ -25,89 +26,86 @@ It plays your favorite music ad-free and mixes tracks like a DJ.
 
 | | |
 | --- | --- |
-| 🎧 **AutoMix** | Beat-matched transitions: the two songs share a tempo and the bass swaps on the bar. |
-| 🌊 **Smart Crossfade** | Fades into the next song where the current one winds down. |
-| 🎤 **Apple-style lyrics** | Syllable timing, letter-by-letter karaoke, translations under each line, ten sources. |
-| 📺 **Canvas** | The track's looping video behind the player: Spotify's own Canvas, or Apple's motion artwork. |
-| ⬇️ **Real downloads** | Songs, albums and playlists play offline, and a badge marks what is saved across the app. |
-| 👤 **Separate accounts** | Each Google account keeps its own library, downloads, history, Recap and linked services. |
-| 🧊 **Native iOS 26** | Liquid Glass controls, system menus and zoom transitions, with icons that move when you use them. |
+| 🎤 **Lyrics like Apple Music** | Ten sources, Apple TTML with syllable timing, letter-by-letter karaoke, translations under each line, a per-track offset. |
+| 📺 **Canvas** | The track's looping video behind the player: Spotify's own Canvas, Apple's motion artwork, a clip you pick yourself, or your own video from Photos. |
+| 🌊 **Your Wave** | A station built from your likes: what you play most comes first, then familiar artists, then discoveries. Two songs by one artist never sit back to back. |
+| 🔁 **Source fallback** | When YouTube refuses a track — region, age, deleted — the same song is looked up on the services that stream it themselves. |
+| 🎧 **Five services** | YouTube Music, SoundCloud, Yandex Music, Spotify and VK in one search, as a mix or one at a time. |
+| 🔐 **Sign-in without a browser** | YouTube logs in inside the app; Yandex, VK, Spotify and SoundCloud keep their own sessions with no API keys. |
+| 🧊 **Native iOS 26** | Liquid Glass controls, system menus, zoom transitions, and a player redrawn after Apple Music. |
 
-## Features
+## Where the music comes from
 
-### Home and Explore
-- Your YouTube Music Home feed, which opens on the last saved page while the new one loads
-- Keep Listening card: recent songs, albums and playlists as a fanned stack that spreads with a tap
-- Quick Picks and the sections built from your own library, also offline
-- Your Mixes under Keep Listening: Flow (your favorites, endless), On Repeat (last 30 days), Rewind (earlier plays) and a mix for each of your top two artists
-- New albums and singles in Explore: cards tinted with each cover's colours, with a vinyl that slides out and spins while the album plays
-- Moods and genres as filter chips under the header: a chip swaps in that mood's page, and a genre family such as Pop shows its sub-genres as cards
-- Headers and filter chips of Home, Library and Explore stay pinned while you scroll
+| Service | Search and catalogue | Its own audio |
+| --- | --- | --- |
+| **YouTube Music** | yes, the app's home | yes |
+| **SoundCloud** | yes, no keys needed | yes, public tracks; Go+ is not unlocked |
+| **Yandex Music** | yes, with an account token | yes, with Yandex Plus; without it the catalogue and previews only |
+| **Spotify** | after signing in to the web player | no — matched onto YouTube, and the badge says so |
+| **VK** | after signing in | no — `audio.*` is closed to third-party apps |
+| **Apple Music** | planned, experimental | needs MusicKit, which sideloaded builds cannot use |
 
-### Playback
-- Songs and podcasts from YouTube Music, with no ads
-- AutoMix follows phrases, keys and vocals, and picks a transition style for each pair of songs
-- Canvas: the track's looping video behind the player. Paste an `sp_dc` cookie from a signed-in open.spotify.com in Settings and it plays Spotify's own Canvas; without a cookie it falls back to Apple's motion artwork
-- Equalizer presets with a curve preview
-- Play Next queue, song radio and listening history, which you can search and filter by Local or YouTube Music
-- Landscape layout for the player
-- Comments on the song in the player
-- Haptic feedback on playback, queue actions, downloads and the sleep timer
-- Sleep timer with a Clock-style countdown wheel or the end of the song
-- AirPlay, a system volume bar and lock screen controls
-- Non-music parts skipped with SponsorBlock, which you can turn off
+Nothing is substituted silently: a track that plays from another service says which one.
 
-### Library
-- Sync of playlists, albums, artists, podcasts and liked songs with your account
-- Playlist editing: name and cover in one sheet, synced to YouTube Music
-- Downloads with full-size cover art and progress on each row
-- Songs that can't be played shown in grey and left out of queues and download counts
-- Select many songs to play, queue, like, download or add them to a playlist
-- Like button on song rows and cards in Home, Explore and Search
-- Long-press menus on songs, albums, playlists, artists and Home cards
+## Lyrics
 
-### Listen Together
-- Rooms that work with Metrolist's metroserver: members hear the same song at the same time
-- Members show their YouTube Music picture; Metrolist members see it as a code at the end of the name
+- Ten sources, in this order by default: Unison, Better Lyrics, lrc.red (the Binimum backend), LyricsPlus and Paxsenix, then Musixmatch, Netease, Kugou, LRCLIB and Genius. Each one can be switched off and the order is editable.
+- Word- and syllable-level timing parsed from Apple's TTML, so a line lights up syllable by syllable.
+- Letter-by-letter karaoke: a word without syllable timing is split by letter, vowels hold longer than consonants, and scripts that change letter shapes when separated (Arabic, CJK, Hebrew, Thai) stay whole.
+- Translations that come with the lyrics, or written by AI: on-device Apple translation for free, or your own key for OpenAI, OpenRouter, Gemini, Claude and any OpenAI-compatible endpoint.
+- Background vocals dimmed and set apart from the lead line.
+- Full-screen lyrics over the cover's colours: one large size, dimmed neighbouring lines, a fade at both edges, a spring on every line change.
+- Offset per track, plus editing and search.
 
-### Lyrics
-- Ten sources, in this order by default: Unison, Better Lyrics, lrc.red (the Binimum backend), LyricsPlus and Paxsenix, then Musixmatch, Netease, Kugou, LRCLIB and Genius. Each one can be switched off, and the order is editable
-- Word- and syllable-level timing, parsed from Apple's TTML, so a line lights up syllable by syllable, the way Apple Music does it
-- Letter-by-letter karaoke: a word without syllable timing is split by letter, with vowels holding longer than consonants. Scripts that change letter shapes when separated (Arabic, CJK, Hebrew, Thai) stay whole
-- Translations that come with the lyrics, shown under the original line, with a switch in Settings
-- Background vocals dimmed and set apart from the lead line
-- Full-screen lyrics over the cover's colours: a large single-size type, dimmed neighbouring lines, a fade at both edges and a spring on every line change
-- Offset, editing and search
-- Optional API keys for Better Lyrics and Paxsenix, entered in Settings → Lyrics
+## Canvas
 
-### Accounts and search
-- Google sign-in inside the app, with several accounts to switch between
-- Search with YouTube Music suggestions, recent searches and sorting
-- Activity inbox from YouTube Music in every tab, with local notifications for new releases (iOS decides when the background check runs)
-- History that merges plays on the iPhone with your YouTube Music history; plays are reported to YouTube Music while you are signed in
-- Incognito mode: searches and plays aren't saved on the iPhone, and songs stay out of your YouTube Music history
+- Full screen: the clip runs behind, the cover and controls step aside, and the title, artist and like button stay on top. A tap brings the player back.
+- Sources in order: a clip you picked, Spotify Canvas (paste an `sp_dc` cookie from a signed-in open.spotify.com), Apple's motion artwork.
+- **Clip from YouTube**: search a music video, drag to the moment, loop it. For tracks that have no Canvas anywhere — Big Brother and friends — this is the fix.
+- **Your own video** from Photos, stored on the device and taking priority over every automatic source.
 
-### Widgets and integrations
-- **Home Screen widgets:** now playing, Quick Picks and monthly stats
-- **Last.fm** and **ListenBrainz** scrobbling
-- **Discord Rich Presence** (needs the Discord Social SDK, see [below](#discord-social-sdk))
-- **Siri and Shortcuts:** "Shuffle my liked songs in Woof Music", play/pause, next song, search and play a song or artist
-- **Home Screen quick actions:** Search, Shuffle Liked Songs, Downloads, Resume
-- **Open YouTube and YouTube Music links:** share a song, playlist, album, artist or podcast link to Woof Music from any app
-- **Shazam links:** share a Shazam song link to Woof Music, or paste it in Search, and the song plays from YouTube Music
+## Your Wave
 
-### Look
-- Custom app icons and accent colours; icons follow light, dark and tinted modes
-- Left-handed tab bar option
-- Update check in the App section of the profile
-- VoiceOver support on the player and song rows, and Reduce Motion is respected
+Likes are the seed. The order is built from play counts: what you actually listen to goes first, the rest of the likes keep their library order, then come recommendations. Familiar artists arrive before discoveries, variants are filtered out (karaoke, covers, slowed, nightcore, 8D), and the same artist never appears three times in a row.
+
+## Playback
+
+- Songs and podcasts from YouTube Music, with no ads.
+- AutoMix follows phrases, keys and vocals, and picks a transition style for each pair of songs.
+- Equalizer presets with a curve preview, sleep timer, AirPlay, a system volume bar and lock screen controls.
+- Non-music parts skipped with SponsorBlock, which you can turn off.
+- Landscape layout, comments on the song, haptics on playback and queue actions.
+- Play Next queue, song radio and listening history, searchable and filterable by Local or YouTube Music.
+
+## Library
+
+- Sync of playlists, albums, artists, podcasts and liked songs with your account.
+- Downloads with full-size cover art and progress on each row.
+- Select many songs to play, queue, like, download or add to a playlist.
+- Songs that cannot be played are shown in grey and left out of queues and download counts.
+
+## Sources and accounts
+
+- Each service signs in on its own from **Settings → Music Services**: Yandex through OAuth, VK through Kate Mobile, Spotify and SoundCloud through the web session, YouTube through Google in the app.
+- Google sometimes refuses sign-in inside embedded browsers, so the login screen offers three browser profiles and reloads itself when it is blocked; as a last resort a `cookies.txt` export can be imported.
+- Search runs over every enabled service at once, or over one of them.
+- **Listen Together** rooms work with Metrolist's metroserver.
+
+## Integrations
+
+- **Siri and Shortcuts:** shuffle liked songs, play/pause, next song, search and play a song or artist.
+- **Widgets:** now playing, Quick Picks and monthly stats.
+- **Last.fm** and **ListenBrainz** scrobbling.
+- **Discord Rich Presence** (needs the Discord Social SDK, see [below](#discord-social-sdk)).
+- **Links:** share a YouTube, YouTube Music or Shazam link into Cadence from any app.
+- **Look:** custom icons and accent colours, left-handed tab bar, VoiceOver, Reduce Motion.
 
 ## Speed
 
 - Home opens on the last saved page, or on the sections built from your library, before YouTube answers.
 - The next song's stream address is loaded while the current one plays, so skipping starts at once.
 - Covers of the neighbouring songs load ahead of a swipe.
-- Images are held in a memory-limited cache.
+- Images are held in a memory-limited cache you can cap from 256 MB to 8 GB.
 
 ## Privacy
 
@@ -117,17 +115,17 @@ It plays your favorite music ad-free and mixes tracks like a DJ.
 - Spotify receives the IDs of the tracks it is asked about only after you paste an `sp_dc` cookie for Canvas. The cookie stays on the iPhone and is never sent anywhere but Spotify.
 - YouTube Music receives each play while you are signed in, so it appears in your history.
 - Last.fm, ListenBrainz and Discord receive what you play only after you connect them.
-- The log file stays on the iPhone until you share it from Settings.
+- The cache holds covers, clips, lyrics and translations; clearing it never touches your library.
 
 ## Install
 
-You need iOS 26 or later and a YouTube Music account. This project publish IPA files, but you can build your own.
+You need iOS 26 or later and a YouTube Music account. Releases publish IPA files, but you can build your own.
 
 1. Fork this repository.
 2. Open the **Actions** tab and run the **iPhone Build** workflow.
-3. Download the `WoofMusic-iOS` artifact from the finished run. It contains `WoofMusic-<version>.ipa`.
+3. Download the `Cadence-iOS` artifact from the finished run. It contains `Cadence-<version>.ipa`.
 4. Sideload it with a tool that re-signs apps with your Apple ID: AltStore, SideStore, Feather or KravaSign. AltStore PAL is not supported.
-5. Open Woof Music and sign in from the top of Settings.
+5. Open Cadence and sign in from the top of Settings.
 
 ### Build on a Mac
 
@@ -137,7 +135,7 @@ You need Xcode.
 ./build_ipa.sh
 ```
 
-The IPA is written to `build/WoofMusic-<version>.ipa`. The version comes from `MARKETING_VERSION` in the Xcode project.
+The IPA is written to `build/Cadence-<version>.ipa`. The version comes from `MARKETING_VERSION` in the Xcode project.
 
 ### Discord Social SDK
 
@@ -165,7 +163,7 @@ Google can challenge or restrict an account used in an unofficial app. Test with
 
 ## Credits
 
-Woof Music Plus is a fork of [Woof Music](https://github.com/LaskyWolf/WoofMusic), the fork of [Trop](https://github.com/686udjie/Trop) by 686udjie.
+Cadence is a fork of [Woof Music](https://github.com/LaskyWolf/WoofMusic), itself a fork of [Trop](https://github.com/686udjie/Trop) by 686udjie. Lyrics, Canvas, artwork lookup, source switching and the player redesign are Cadence's own.
 
 - [SwiftyTube](https://github.com/686udjie/SwiftyTube): Swift InnerTube client for YouTube Music requests, sign-in and session renewal
 - [InnerTubeX](https://github.com/MetrolistGroup/innertubex): extended InnerTube API library for Kotlin
@@ -176,4 +174,4 @@ Woof Music Plus is a fork of [Woof Music](https://github.com/LaskyWolf/WoofMusic
 
 ## License
 
-[GPLv3](LICENSE.txt), like Trop. Woof Music is not affiliated with, endorsed or sponsored by Google or YouTube.
+[GPLv3](LICENSE.txt), like Trop. Cadence is not affiliated with, endorsed or sponsored by Google, YouTube, Spotify, SoundCloud, VK or Yandex.

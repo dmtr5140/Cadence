@@ -1,37 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 560" width="1280" height="560" font-family="-apple-system,'SF Pro Display','Segoe UI',Roboto,Helvetica,Arial,sans-serif">
 <defs>
-<radialGradient id="gl"><stop offset="0" stop-color="#22c55e" stop-opacity=".55"/><stop offset=".45" stop-color="#15803d" stop-opacity=".18"/><stop offset="1" stop-color="#15803d" stop-opacity="0"/></radialGradient>
-<radialGradient id="rd"><stop offset="0" stop-color="#ef4444" stop-opacity=".5"/><stop offset=".45" stop-color="#b91c1c" stop-opacity=".16"/><stop offset="1" stop-color="#b91c1c" stop-opacity="0"/></radialGradient>
-<linearGradient id="titleGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5ef08a"/><stop offset="1" stop-color="#16a34a"/></linearGradient>
-<linearGradient id="barG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b5e"/><stop offset="1" stop-color="#b91c1c"/></linearGradient>
-<linearGradient id="ar1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8a5c"/><stop offset="1" stop-color="#7a1f3d"/></linearGradient>
-<linearGradient id="ar2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7b7bf5"/><stop offset="1" stop-color="#1a1733"/></linearGradient>
-<linearGradient id="ar3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#45d6c0"/><stop offset="1" stop-color="#0d3b40"/></linearGradient>
-<clipPath id="r"><rect width="1280" height="560" rx="28"/></clipPath>
+<radialGradient id="auroraA"><stop offset="0" stop-color="#7c5cff" stop-opacity=".62"/><stop offset=".5" stop-color="#4a2fb8" stop-opacity=".2"/><stop offset="1" stop-color="#4a2fb8" stop-opacity="0"/></radialGradient>
+<radialGradient id="auroraB"><stop offset="0" stop-color="#2fd8c8" stop-opacity=".5"/><stop offset=".48" stop-color="#12867f" stop-opacity=".16"/><stop offset="1" stop-color="#12867f" stop-opacity="0"/></radialGradient>
+<linearGradient id="title" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b6a8ff"/><stop offset=".55" stop-color="#8b7cff"/><stop offset="1" stop-color="#2fd8c8"/></linearGradient>
+<linearGradient id="art" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b7cff"/><stop offset=".5" stop-color="#4a2fb8"/><stop offset="1" stop-color="#0f4a52"/></linearGradient>
+<linearGradient id="karaoke" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset=".62" stop-color="#ffffff"/><stop offset=".63" stop-color="#4c4c5a"/><stop offset="1" stop-color="#4c4c5a"/></linearGradient>
+<linearGradient id="bar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8b7cff"/><stop offset="1" stop-color="#2fd8c8"/></linearGradient>
+<clipPath id="round"><rect width="1280" height="560" rx="28"/></clipPath>
+<filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="26"/></filter>
 <style>
-.g1{animation:pulse 9s ease-in-out infinite alternate}
-.g2{animation:pulse 9s ease-in-out -4.5s infinite alternate}
-@keyframes pulse{to{opacity:.5}}
-.eq{transform-box:fill-box;transform-origin:bottom;animation:eq 1.15s ease-in-out infinite alternate}
-.eq2{animation-delay:-.38s}.eq3{animation-delay:-.76s}
-@keyframes eq{to{transform:scaleY(.4)}}
-.pg{transform-box:fill-box;transform-origin:left center;animation:pg 16s linear infinite}
-@keyframes pg{from{transform:scaleX(.25)}to{transform:scaleX(1)}}
+.a1{animation:pulse 11s ease-in-out infinite alternate}
+.a2{animation:pulse 11s ease-in-out -5.5s infinite alternate}
+@keyframes pulse{to{opacity:.55}}
+.eq{transform-box:fill-box;transform-origin:bottom;animation:eq 1.05s ease-in-out infinite alternate}
+.eq2{animation-delay:-.35s}.eq3{animation-delay:-.7s}
+@keyframes eq{to{transform:scaleY(.35)}}
+.pg{transform-box:fill-box;transform-origin:left center;animation:pg 18s linear infinite}
+@keyframes pg{from{transform:scaleX(.05)}to{transform:scaleX(1)}}
+.kw{animation:kw 6s ease-in-out infinite alternate}
+@keyframes kw{from{transform:translateX(0)}to{transform:translateX(6px)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </defs>
-<g clip-path="url(#r)"><rect width="1280" height="560" fill="#08090a"/>
-<ellipse class="g1" cx="40" cy="510" rx="580" ry="430" fill="url(#gl)"/>
-<ellipse class="g2" cx="1250" cy="30" rx="580" ry="440" fill="url(#rd)"/>
-<g transform="translate(90 56)"><rect width="266" height="44" rx="22" fill="#ffffff10" stroke="#ffffff20"/><circle cx="26" cy="22" r="4.5" fill="#4ade80"/><text x="44" y="29" font-size="16.5" font-weight="600" fill="#dcdce2" letter-spacing="1.1">FORK OF WOOFMUSIC</text></g>
-<text x="90" y="186" font-size="82" font-weight="800" fill="#fff" letter-spacing="-3">WoofMusic <tspan fill="url(#titleGrad)">Plus</tspan></text>
-<text x="92" y="244" font-size="31" font-weight="600" fill="#fff">YouTube Music, native on iPhone.</text>
-<text x="92" y="292" font-size="22" fill="#a3a3ab">Built on WoofMusic, with lyrics, karaoke and Canvas.</text>
-<g transform="translate(90 340)"><rect width="107" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#4ade80"/><text x="38" y="29" font-size="16" font-weight="500" fill="#e8e8ec">No ads</text></g>
-<g transform="translate(209 340)"><rect width="158" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#4ade80"/><text x="38" y="29" font-size="16" font-weight="500" fill="#e8e8ec">Liquid Glass</text></g>
-<g transform="translate(90 398)"><rect width="175" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#4ade80"/><text x="38" y="29" font-size="16" font-weight="500" fill="#e8e8ec">DJ transitions</text></g>
-<g transform="translate(277 398)"><rect width="116" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#4ade80"/><text x="38" y="29" font-size="16" font-weight="500" fill="#e8e8ec">Widgets</text></g>
-<g transform="translate(740 64)"><rect width="450" height="116" rx="22" fill="#17181c" stroke="#ffffff1a"/><rect x="0" y="26" width="4" height="64" rx="2" fill="url(#barG)"/><rect x="24" y="22" width="72" height="72" rx="16" fill="url(#ar1)"/><text x="114" y="54" font-size="19" font-weight="700" fill="#fff">Neon Rain</text><text x="114" y="80" font-size="14" fill="#a3a3ab">Halcyon Drive</text><rect x="114" y="96" width="250" height="3" rx="1.5" fill="#ffffff12"/><rect class="pg" x="114" y="96" width="250" height="3" rx="1.5" fill="#ff5a4e"/><g fill="#ff5a4e"><rect class="eq" x="382" y="44" width="5" height="32" rx="2.5"/><rect class="eq eq2" x="391" y="44" width="5" height="32" rx="2.5"/><rect class="eq eq3" x="400" y="44" width="5" height="32" rx="2.5"/></g></g>
-<g transform="translate(740 196)"><rect width="450" height="116" rx="22" fill="#141518" stroke="#ffffff14"/><rect x="0" y="26" width="4" height="64" rx="2" fill="#3a3a40"/><rect x="24" y="22" width="72" height="72" rx="16" fill="url(#ar2)"/><text x="114" y="54" font-size="19" font-weight="700" fill="#f0f0f2">Paper Moons</text><text x="114" y="80" font-size="14" fill="#a3a3ab">Aiko Rey</text><text x="428" y="54" font-size="14" fill="#75757d" text-anchor="end">4:07</text><rect x="114" y="96" width="250" height="3" rx="1.5" fill="#ffffff12"/></g>
-<g transform="translate(740 328)"><rect width="450" height="116" rx="22" fill="#141518" stroke="#ffffff14"/><rect x="0" y="26" width="4" height="64" rx="2" fill="#3a3a40"/><rect x="24" y="22" width="72" height="72" rx="16" fill="url(#ar3)"/><text x="114" y="54" font-size="19" font-weight="700" fill="#f0f0f2">Halo Static</text><text x="114" y="80" font-size="14" fill="#a3a3ab">The Quiet Hours</text><text x="428" y="54" font-size="14" fill="#75757d" text-anchor="end">2:58</text><rect x="114" y="96" width="250" height="3" rx="1.5" fill="#ffffff12"/></g>
+<g clip-path="url(#round)">
+<rect width="1280" height="560" fill="#08080c"/>
+<ellipse class="a1" cx="30" cy="530" rx="620" ry="450" fill="url(#auroraA)"/>
+<ellipse class="a2" cx="1270" cy="20" rx="600" ry="430" fill="url(#auroraB)"/>
+
+<g transform="translate(80 56)"><rect width="330" height="44" rx="22" fill="#ffffff0d" stroke="#ffffff1f"/><circle cx="26" cy="22" r="4.5" fill="#2fd8c8"/><text x="44" y="29" font-size="15.5" font-weight="600" fill="#dcdce4" letter-spacing="1.4">V2.0 · NATIVE ON IPHONE</text></g>
+
+<text x="80" y="200" font-size="94" font-weight="800" fill="#fff" letter-spacing="-3.5">Cad<tspan fill="url(#title)">ence</tspan></text>
+<text x="82" y="256" font-size="30" font-weight="600" fill="#f2f2f6">YouTube Music, with the lyrics it deserved.</text>
+<text x="82" y="298" font-size="21" fill="#9d9daa">Syllable timing, karaoke, Canvas, five services and Siri — no ads.</text>
+
+<g transform="translate(80 344)"><rect width="180" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#8b7cff"/><text x="38" y="29" font-size="15.5" font-weight="500" fill="#e8e8ee">10 lyric sources</text></g>
+<g transform="translate(276 344)"><rect width="104" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#8b7cff"/><text x="38" y="29" font-size="15.5" font-weight="500" fill="#e8e8ee">Karaoke</text></g>
+<g transform="translate(396 344)"><rect width="163" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#8b7cff"/><text x="38" y="29" font-size="15.5" font-weight="500" fill="#e8e8ee">AI translation</text></g>
+<g transform="translate(80 402)"><rect width="95" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#2fd8c8"/><text x="38" y="29" font-size="15.5" font-weight="500" fill="#e8e8ee">Canvas</text></g>
+<g transform="translate(191 402)"><rect width="169" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#2fd8c8"/><text x="38" y="29" font-size="15.5" font-weight="500" fill="#e8e8ee">5 music services</text></g>
+<g transform="translate(376 402)"><rect width="180" height="46" rx="23" fill="#ffffff0d" stroke="#ffffff1a"/><circle cx="22" cy="23" r="4" fill="#2fd8c8"/><text x="38" y="29" font-size="15.5" font-weight="500" fill="#e8e8ee">Siri &amp; Shortcuts</text></g>
+
+<g transform="translate(776 30)">
+<rect width="424" height="500" rx="30" fill="#101016" stroke="#ffffff17"/>
+<g filter="url(#soft)" opacity=".55"><rect x="70" y="54" width="284" height="284" rx="26" fill="url(#art)"/></g>
+<rect x="70" y="46" width="284" height="284" rx="26" fill="url(#art)"/>
+<text x="70" y="382" font-size="21" font-weight="700" fill="#fff">Neon Rain</text>
+<text x="70" y="408" font-size="14.5" fill="#9d9daa">Halcyon Drive</text>
+<rect x="70" y="430" width="284" height="4" rx="2" fill="#ffffff14"/>
+<rect class="pg" x="70" y="430" width="284" height="4" rx="2" fill="url(#bar)"/>
+<g fill="#8b7cff"><rect class="eq" x="330" y="464" width="4" height="24" rx="2"/><rect class="eq eq2" x="338" y="464" width="4" height="24" rx="2"/><rect class="eq eq3" x="346" y="464" width="4" height="24" rx="2"/></g>
+<text class="kw" x="70" y="470" font-size="16" font-weight="600" fill="url(#karaoke)">and the city keeps on calling</text>
+<text x="70" y="494" font-size="16" fill="#3f3f4c">every light a little colder</text>
+</g>
 </g></svg>
