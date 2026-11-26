@@ -40,7 +40,7 @@ private struct StatsView: View {
             default: medium(stats)
             }
         } else {
-            WidgetPlaceholder(symbol: "chart.bar.xaxis", text: "Open Woof Music to build your stats")
+            WidgetPlaceholder(symbol: "chart.bar.xaxis", text: "Open Cadence to build your stats")
         }
     }
 

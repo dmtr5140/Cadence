@@ -236,7 +236,7 @@ final class ListenTogether {
         let name = SettingsStore.shared.listenTogetherUsername.trimmingCharacters(in: .whitespacesAndNewlines)
         if !name.isEmpty { return name }
         let account = AccountState.shared.accountName
-        return account == "Guest" ? "WoofMusic listener" : account
+        return account == "Guest" ? "Cadence listener" : account
     }
 
     private func start(_ request: Request) {
@@ -258,9 +258,9 @@ final class ListenTogether {
         }
         pendingRequest = request
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
-        let connection = ListenTogetherConnection(url: url, userAgent: "WoofMusic/\(version) (iOS)")
+        let connection = ListenTogetherConnection(url: url, userAgent: "Cadence/\(version) (iOS)")
         self.connection = connection
-        connection.send(LTMessage.clientCapabilities, LTClientCapabilities(clientVersion: "WoofMusic \(version)", features: Self.features))
+        connection.send(LTMessage.clientCapabilities, LTClientCapabilities(clientVersion: "Cadence \(version)", features: Self.features))
         listenTask = Task { [weak self] in
             for await event in connection.events {
                 guard let self, self.connection === connection else { return }

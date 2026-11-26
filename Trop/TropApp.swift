@@ -138,7 +138,7 @@ private struct ProfileRoot: View {
             .alert("Your library couldn't open", isPresented: $libraryFailedToOpen) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text("Changes you make now won't be saved. Close and reopen Woof Music to try again.")
+                Text("Changes you make now won't be saved. Close and reopen Cadence to try again.")
             }
     }
 }

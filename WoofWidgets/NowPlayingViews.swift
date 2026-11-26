@@ -103,7 +103,7 @@ struct WidgetPlaceholder: View {
             Image(systemName: isCutOff ? "exclamationmark.triangle" : symbol)
                 .font(.title2)
             Spacer(minLength: 0)
-            Text(isCutOff ? "Can't reach Woof Music through the \(backend.rawValue). Open the app, or long-press Settings › Integrations for diagnostics." : text)
+            Text(isCutOff ? "Can't reach Cadence through the \(backend.rawValue). Open the app, or long-press Settings › Integrations for diagnostics." : text)
                 .font(.subheadline.weight(.medium))
                 .lineLimit(4)
                 .minimumScaleFactor(0.75)

@@ -1,0 +1,63 @@
+format_version: '26'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: ios
+
+workflows:
+  build:
+    summary: Build the unsigned IPA.
+    description: Runs build_ipa.sh, which builds ffmpeg-kit and packages the IPA.
+    steps:
+    - git-clone@8: {}
+    - script@1:
+        title: Build IPA
+        inputs:
+        - content: |
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            bash build_ipa.sh
+    - deploy-to-bitrise-io@2:
+        inputs:
+        - deploy_path: build/Cadence-2.0.ipa
+        - is_compress: "false"
+
+  archive_and_export_app:
+    summary: Create a signed IPA.
+    steps:
+    - git-clone@8: {}
+    - script@1:
+        title: Build ffmpeg-kit and IPA
+        inputs:
+        - content: |
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            bash build_ipa.sh
+    - xcode-archive@6:
+        inputs:
+        - project_path: Trop.xcodeproj
+        - scheme: Trop
+        - distribution_method: ad-hoc
+        - automatic_code_signing: api-key
+    - deploy-to-bitrise-io@2: {}
+
+trigger_map:
+- push_branch: main
+  workflow: build
+- pull_request_source_branch: "*"
+  workflow: build
+
+meta:
+  bitrise.io:
+    stack: osx-xcode-27.2.x
+    machine_type_id: g2.mac.large
+
+app:
+  envs:
+  - BITRISE_PROJECT_PATH: Trop.xcodeproj
+    opts:
+      is_expand: false
+  - BITRISE_SCHEME: Trop
+    opts:
+      is_expand: false
+  - BITRISE_DISTRIBUTION_METHOD: ad-hoc
+    opts:
+      is_expand: false

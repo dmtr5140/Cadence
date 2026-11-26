@@ -2,7 +2,7 @@
 // SourceModel.swift
 // Trop
 //
-// The services Music+ can read besides YouTube Music. A service either hands
+// The services Cadence can read besides YouTube Music. A service either hands
 // over an audio URL we can feed to mpv, or only a catalog that has to be
 // matched onto YouTube. The badge in the UI always says which happened.
 //

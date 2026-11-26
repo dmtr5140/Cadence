@@ -134,7 +134,7 @@ enum CoverSearch {
     private static func fetch(_ url: URL) async -> Data? {
         var request = URLRequest(url: url)
         request.timeoutInterval = 8
-        request.setValue("WoofMusic/1.1 (iOS)", forHTTPHeaderField: "User-Agent")
+        request.setValue("Cadence/2.0 (iOS)", forHTTPHeaderField: "User-Agent")
         guard let (data, response) = try? await URLSession.shared.data(for: request),
               (response as? HTTPURLResponse)?.statusCode == 200
         else { return nil }

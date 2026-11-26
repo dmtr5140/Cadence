@@ -15,7 +15,7 @@ actor ArtistKindService {
     /// Bump the version when the labels change, so old entries are looked up again.
     private static let defaultsKey = "artistKindCache.v2"
     private static let legacyDefaultsKey = "artistKindCache"
-    private static let userAgent = "WoofMusic/1.3 ( https://github.com/LaskyWolf/WoofMusic )"
+    private static let userAgent = "Cadence/2.0 ( https://github.com/dmtr5140/Cadence )"
     /// MusicBrainz allows 1 request per second; a small margin keeps us under it.
     private static let requestInterval: TimeInterval = 1.1
     /// MusicBrainz answers 503 to roughly one request in six even at that pace.

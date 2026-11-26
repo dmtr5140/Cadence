@@ -29,8 +29,8 @@ enum DiscordDefaults {
     static let youtubeWatchUrl = "https://music.youtube.com/watch?v="
     static let button1Label = "Listen on YouTube Music"
     static let button1UrlTemplate = "https://music.youtube.com/watch?v={song.id}"
-    static let button2Label = "Visit Woof Music"
-    static let button2Url = "https://github.com/LaskyWolf/WoofMusic"
+    static let button2Label = "Visit Cadence"
+    static let button2Url = "https://github.com/dmtr5140/Cadence"
     static let stateTemplate = "{artist.name}"
     static let detailsTemplate = "{song.name}"
     static let activityType = String(ActivityType.listening.rawValue)

@@ -38,7 +38,7 @@ private struct QuickPicksView: View {
             default: medium(songs)
             }
         } else {
-            WidgetPlaceholder(symbol: "sparkles", text: "Open Home in Woof Music to load your Quick Picks")
+            WidgetPlaceholder(symbol: "sparkles", text: "Open Home in Cadence to load your Quick Picks")
         }
     }
 
@@ -100,7 +100,7 @@ private struct QuickPicksView: View {
             HStack {
                 header
                 Spacer(minLength: 0)
-                Text("Woof Music")
+                Text("Cadence")
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.55))
             }

@@ -32,7 +32,7 @@ final class AppUpdater {
 
     static let installedVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
     static let installedBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0"
-    private static let latestReleaseURL = URL(string: "https://api.github.com/repos/LaskyWolf/WoofMusic/releases/latest")!
+    private static let latestReleaseURL = URL(string: "https://api.github.com/repos/dmtr5140/Cadence/releases/latest")!
     /// Opening the app often does not ask GitHub every time.
     private static let recheckInterval: TimeInterval = 6 * 60 * 60
 
@@ -85,7 +85,7 @@ struct AppUpdateSection: View {
             LabeledContent("Version", value: "\(AppUpdater.installedVersion) (\(AppUpdater.installedBuild))")
             if case .available(let version, let page) = updater.status {
                 Link(destination: page) {
-                    Label("Woof Music \(version) Is Available", systemImage: "arrow.down.app")
+                    Label("Cadence \(version) Is Available", systemImage: "arrow.down.app")
                 }
             } else {
                 Button { Task { await updater.check(force: true) } } label: {

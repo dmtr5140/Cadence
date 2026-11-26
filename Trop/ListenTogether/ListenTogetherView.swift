@@ -126,7 +126,7 @@ struct ListenTogetherView: View {
             }
             .padding(.vertical, 4)
             if let code = room.roomCode {
-                ShareLink(item: "Listen with me on WoofMusic or Metrolist. Room code: \(code)") {
+                ShareLink(item: "Listen with me on Cadence or Metrolist. Room code: \(code)") {
                     Label("Share Room Code", systemImage: "square.and.arrow.up")
                 }
             }

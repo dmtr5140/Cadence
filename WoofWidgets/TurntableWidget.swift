@@ -23,7 +23,7 @@ struct TurntableWidget: Widget {
                 }
         }
         .configurationDisplayName("Turntable")
-        .description("The song playing in Woof Music, with its controls.")
+        .description("The song playing in Cadence, with its controls.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .accessoryRectangular])
     }
 }
@@ -41,7 +41,7 @@ private struct TurntableView: View {
             default: medium(state)
             }
         } else {
-            WidgetPlaceholder(symbol: "music.note", text: "Open Woof Music to start listening")
+            WidgetPlaceholder(symbol: "music.note", text: "Open Cadence to start listening")
         }
     }
 

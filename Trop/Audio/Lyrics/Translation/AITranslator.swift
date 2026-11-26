@@ -95,8 +95,8 @@ enum AITranslator {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
         if engine == .openRouter {
-            request.setValue("Music+ for iOS", forHTTPHeaderField: "X-Title")
-            request.setValue("https://github.com/dmitrylol/WoofMusicPlus", forHTTPHeaderField: "HTTP-Referer")
+            request.setValue("Cadence for iOS", forHTTPHeaderField: "X-Title")
+            request.setValue("https://github.com/dmtr5140/Cadence", forHTTPHeaderField: "HTTP-Referer")
         }
 
         let body: [String: Any] = [

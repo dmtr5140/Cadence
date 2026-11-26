@@ -19,5 +19,5 @@ enum ListenBrainzDefaults {
     // A couple of seconds in, so the title and artist are final.
     static let nowPlayingDelaySeconds: TimeInterval = 2
 
-    static let clientName = "Woof Music"
+    static let clientName = "Cadence"
 }

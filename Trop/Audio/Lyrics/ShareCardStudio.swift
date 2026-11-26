@@ -162,7 +162,7 @@ struct ShareCard: View {
         HStack(alignment: .bottom) {
             if code == nil { Spacer(minLength: 0) }
             VStack(alignment: code == nil ? .center : .leading, spacing: 6) {
-                Text("🐾 Woof Music")
+                Text("Cadence")
                     .font(.system(size: 12, weight: .heavy, design: .rounded))
                     .tracking(1.2)
                     .textCase(.uppercase)
@@ -1073,7 +1073,7 @@ enum ShareCardVideo {
         content: ShareCardContent, style: ShareCardStyle, stickers: [ShareCardSticker], code: UIImage?,
         progress: (Double) -> Void
     ) async throws -> URL {
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Woof Music Card.mp4")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Cadence Card.mp4")
         try? FileManager.default.removeItem(at: url)
 
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)

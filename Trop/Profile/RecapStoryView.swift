@@ -865,7 +865,7 @@ struct RecapShareCard: View {
                     }
                 }
             }
-            Text("Woof Music")
+            Text("Cadence")
                 .font(.system(size: 12, weight: .heavy, design: .rounded))
                 .tracking(1.2)
                 .textCase(.uppercase)

@@ -3,7 +3,7 @@
 //  Trop
 //
 //  Unison (https://docs.betterlyrics.org/unison) is community-submitted lyrics
-//  keyed by video id — the one id WoofMusic already has — and answers in TTML,
+//  keyed by video id — the one id the app already has — and answers in TTML,
 //  LRC or plain text. No key, 600 reads a minute per address.
 //
 

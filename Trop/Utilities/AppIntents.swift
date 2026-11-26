@@ -7,7 +7,7 @@ import AppIntents
 import SwiftUI
 
 // Siri and Shortcuts actions. Phrases must contain the app's name; the
-// Info.plist adds "Woof Music" and "Woof" as alternative names so they don't
+// Info.plist adds "Cadence Music" and "Cadence Player" as alternative names so they don't
 // collide with Apple Music.
 
 struct ShuffleLikedSongsIntent: AudioPlaybackIntent {
