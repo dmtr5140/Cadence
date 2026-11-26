@@ -10,7 +10,7 @@ import Translation
 
 struct LyricsView: View {
     /// Point size of a lyric line.
-    static let lineFontSize: Double = 26
+    static let lineFontSize: Double = 36
     private let np = NowPlaying.shared
     private let player = PlayerController.shared
     @Environment(SettingsStore.self) private var settings
@@ -318,7 +318,7 @@ struct LyricsView: View {
             GeometryReader { geo in
                 ScrollViewReader { proxy in
                     ScrollView {
-                        VStack(alignment: settings.lyricsAlignment.textAlignment.horizontal, spacing: 12) {
+                        VStack(alignment: settings.lyricsAlignment.textAlignment.horizontal, spacing: 22) {
                             Spacer().frame(height: 20)
 
                             if !isKaraoke, let provider = LyricsState.shared.providerName {
@@ -439,17 +439,17 @@ struct LyricsView: View {
     private func opacityForDistance(_ distance: Int) -> Double {
         switch distance {
         case 0: return 1
-        case 1: return 0.55
-        case 2: return 0.32
-        default: return 0.2
+        case 1: return 0.44
+        case 2: return 0.24
+        default: return 0.13
         }
     }
 
     private func scaleForDistance(_ distance: Int) -> CGFloat {
         switch distance {
         case 0: return 1
-        case 1: return 0.98
-        default: return 0.96
+        case 1: return 0.97
+        default: return 0.93
         }
     }
 
@@ -457,7 +457,7 @@ struct LyricsView: View {
 
     /// Lines further than this from the active one never blur: they are off
     /// screen, and a blur layer per row is not free.
-    private static let entranceRadius = 9
+    private static let entranceRadius = 14
 
     /// Runs the blur-in: rows start out of focus and slightly low, then settle.
     private func runEntrance() {
@@ -466,7 +466,7 @@ struct LyricsView: View {
             return
         }
         entranceProgress = 0
-        withAnimation(.smooth(duration: 0.5)) { entranceProgress = 1 }
+        withAnimation(.smooth(duration: 0.7)) { entranceProgress = 1 }
     }
 
     /// Staggered from the active line outwards, the way rows arrive on screen.
@@ -563,7 +563,7 @@ struct LyricsView: View {
         // from the active one outwards. Runs on first show and on a new track.
         .blur(radius: entranceBlur(for: index))
         .offset(y: entranceRise(for: index))
-        .animation(.smooth(duration: 0.55).delay(entranceDelay(for: index)), value: entranceProgress)
+        .animation(.spring(response: 0.7, dampingFraction: 0.82).delay(entranceDelay(for: index)), value: entranceProgress)
     }
 
     /// Metrolist's expressiveAccent: white on dynamic (album art) backgrounds,

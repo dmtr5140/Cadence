@@ -336,7 +336,7 @@ struct FullPlayerView: View {
                         .opacity(showsKaraoke ? 0 : 1)
 
                     // Hidden under an open panel: the glass is see-through.
-                    PlayerLyricPreview(lines: syncedLyrics)
+                    PlayerLyricPreview(lines: syncedLyrics) { showLyrics = true }
                         .opacity(showQueue || showLyrics ? 0 : 1)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -855,6 +855,7 @@ private final class CoverFrameBox {
 /// not the whole player, redraws as `currentTime` ticks.
 private struct PlayerLyricPreview: View {
     let lines: [LyricLine]
+    let onTap: () -> Void
 
     @Environment(SettingsStore.self) private var settings
     private let np = NowPlaying.shared
@@ -871,23 +872,35 @@ private struct PlayerLyricPreview: View {
     var body: some View {
         Group {
             if let activeLyricText {
-                Text(activeLyricText)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.white.opacity(0.82))
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .multilineTextAlignment(settings.lyricsAlignment.multilineTextAlignment)
-                    .frame(maxWidth: .infinity, alignment: settings.lyricsAlignment.textAlignment)
+                Button(action: onTap) {
+                    HStack(spacing: 6) {
+                        Text(activeLyricText)
+                            .font(.system(size: 19, weight: .semibold))
+                            .foregroundStyle(.white.opacity(0.96))
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .contentTransition(.opacity)
+                            .animation(.easeInOut(duration: 0.28), value: activeLyricText)
+                            .multilineTextAlignment(settings.lyricsAlignment.multilineTextAlignment)
+                            .frame(maxWidth: .infinity, alignment: settings.lyricsAlignment.textAlignment)
+
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(.white.opacity(0.45))
+                    }
                     .padding(.horizontal, 32)
                     .padding(.bottom, 2)
-                    .accessibilityLabel("Current lyric: \(activeLyricText)")
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Current lyric: \(activeLyricText)")
+                .accessibilityHint("Opens the lyrics")
             } else {
                 Color.clear
             }
         }
         .frame(maxWidth: .infinity)
         .frame(height: 33, alignment: .bottom)
-        .allowsHitTesting(false)
     }
 }
 
