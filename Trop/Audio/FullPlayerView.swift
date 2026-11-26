@@ -78,172 +78,10 @@ struct FullPlayerView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // A gradient's colours don't animate: each palette is its own
-                // view, and the new one fades in over the old one.
-                ZStack {
-                if settings.playerBackgroundStyle == .solid {
-                    Color.black
-                        .ignoresSafeArea()
-                } else if settings.playerStyle == .card {
-                    // The cover's colour, brighter at the top and dark enough for
-                    // white text from the middle down, where the controls sit.
-                    let base = playerBackgroundColors.first ?? .black
-                    LinearGradient(
-                        stops: [
-                            .init(color: base.mix(with: .black, by: 0.15), location: 0),
-                            .init(color: base.mix(with: .black, by: 0.6), location: 0.55)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .ignoresSafeArea()
-                    .id(playerBackgroundColors)
-                    .transition(.opacity)
-                } else {
-                    LinearGradient(
-                        colors: [
-                            readableBackgroundColors.first ?? Color(red: 0.15, green: 0.15, blue: 0.2),
-                            readableBackgroundColors.last ?? Color(red: 0.05, green: 0.05, blue: 0.08)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    // An overlay, not a ZStack sibling: on a screen narrower than
-                    // 400 points the glow's fixed width would widen the player,
-                    // shift it right and show the previous cover at the left edge.
-                    .overlay {
-                        Circle()
-                            .fill(readableBackgroundColors.first ?? .blue)
-                            .frame(width: 400, height: 400)
-                            .blur(radius: 120)
-                            .opacity(0.45)
-                            .offset(y: -150)
-                    }
-                    .ignoresSafeArea()
-                    .id(playerBackgroundColors)
-                    .transition(.opacity)
-                }
-                }
-                .animation(.easeInOut(duration: 0.8), value: playerBackgroundColors)
-
-                // Canvas: the album's looping clip behind the cover and the
-                // lyrics, dimmed so white text keeps its contrast. A track
-                // without a clip leaves the gradient untouched.
-                if settings.showCanvas,
-                   settings.playerBackgroundStyle != .solid,
-                   let videoId = np.videoId {
-                    CanvasBackdrop(
-                        videoId: videoId,
-                        title: np.title,
-                        artist: np.displayArtist,
-                        album: np.albumTitle.isEmpty ? nil : np.albumTitle,
-                        dim: 0.55
-                    )
-                    .ignoresSafeArea()
-                }
-
-                if !showsCardCover, isLandscape {
-                    // The cover fills the left column up to the screen's edges and
-                    // fades out sideways, under the start of the controls.
-                    let insets = geometry.safeAreaInsets
-                    let pageSize = CGSize(
-                        width: landscapeCoverWidth(geometry),
-                        height: geometry.size.height + artworkTopInset + insets.bottom
-                    )
-                    artworkPager(pageSize: pageSize)
-                        .frame(width: pageSize.width, height: pageSize.height)
-                        .compositingGroup()
-                        .clipped()
-                        .mask {
-                            LinearGradient(
-                                stops: [
-                                    .init(color: .white, location: 0),
-                                    .init(color: .white, location: 0.6),
-                                    .init(color: .clear, location: 1)
-                                ],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        }
-                        .offset(x: -insets.leading, y: -artworkTopInset)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                        .opacity(showsKaraoke ? 0 : 1)
-                } else if !showsCardCover {
-                    // Shorter while the speed dial is open, so the title stays on the faded part.
-                    let artworkHeight = (geometry.size.height + artworkTopInset) * (showsSpeedDial ? 0.48 : 0.58)
-                    // Clipped to the screen width, so a neighbour shows only the
-                    // part dragged in from the edge.
-                    artworkPager(pageSize: CGSize(width: geometry.size.width, height: artworkHeight))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: artworkHeight)
-                        .compositingGroup()
-                        .clipped()
-                        .mask {
-                            LinearGradient(
-                                stops: [
-                                    .init(color: .white, location: 0),
-                                    .init(color: .white, location: 0.62),
-                                    .init(color: .clear, location: 1)
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        }
-                        .offset(y: -artworkTopInset)
-                        .frame(maxHeight: .infinity, alignment: .top)
-                        .opacity(showsKaraoke ? 0 : 1)
-                }
-
-                if isLandscape {
-                    // Two columns, so nothing has to shrink below a usable size:
-                    // the cover (and an open panel) on the left, the controls on the right.
-                    HStack(spacing: 24) {
-                        artworkArea(pageWidth: showsCardCover ? geometry.size.width / 2 : landscapeCoverWidth(geometry))
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .overlay { playerPanel }
-
-                        VStack(spacing: 0) {
-                            playerHandle
-
-                            titleAndActionsRow
-                                .padding(.bottom, 12)
-                                .opacity(showsKaraoke ? 0 : 1)
-
-                            Spacer(minLength: 0)
-
-                            controlsSection
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .padding(.horizontal, 16)
-                } else {
-                    VStack(spacing: 0) {
-                        playerHandle
-
-                        VStack(spacing: 0) {
-                            artworkArea(pageWidth: geometry.size.width)
-
-                            titleAndActionsRow
-                                .padding(.horizontal, 32)
-                                .padding(.top, 20)
-                                .padding(.bottom, 16)
-                                .opacity(showsKaraoke ? 0 : 1)
-
-                            // Hidden under an open panel: the glass is see-through.
-                            PlayerLyricPreview(lines: syncedLyrics)
-                                .opacity(showQueue || showLyrics ? 0 : 1)
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        // No bottom padding: the panel covers the lyric line and the
-                        // progress bar's touch area leaves the gap above its track.
-                        .overlay {
-                            playerPanel
-                                .padding(.horizontal, 20)
-                        }
-
-                        controlsSection
-                    }
-                }
+                playerBackground
+                canvasBackdropLayer
+                artworkLayer(geometry)
+                playerContent(geometry)
 
             }
             .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
@@ -253,15 +91,7 @@ struct FullPlayerView: View {
             // animation away from the player.
             // A few points wider than the player on each side, so no edge of the
             // screen is left without the animation.
-            .overlay(alignment: .top) {
-                let sleepOverlaySize = CGSize(
-                    width: geometry.size.width + 2 * Self.sleepOverlayBleed,
-                    height: geometry.size.height + artworkTopInset
-                )
-                SleepEndedOverlay(size: sleepOverlaySize)
-                    .frame(width: sleepOverlaySize.width, height: sleepOverlaySize.height)
-                    .offset(y: -artworkTopInset)
-            }
+            .overlay(alignment: .top) { sleepEndedOverlay(geometry) }
             .overlay { radioBloomLayer }
             .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showQueue)
             .animation(.easeInOut(duration: reduceMotion ? 0.15 : 0.25), value: showLyrics)
@@ -275,17 +105,7 @@ struct FullPlayerView: View {
             .onReceive(NotificationCenter.default.publisher(for: .canvasStageRequested)) { note in
                 handleCanvasStageRequest(note)
             }
-            .overlay {
-                if showsFullscreenCover {
-                    FullscreenCoverOverlay(
-                        source: coverFrame.rect,
-                        sourceCornerRadius: showsCardCover ? Self.cardCoverRadius : 0,
-                        fadesBottom: !showsCardCover,
-                        onClosed: { showsFullscreenCover = false },
-                        cover: { cover(for: $0) }
-                    )
-                }
-            }
+            .overlay { fullscreenCoverLayer }
             .onChange(of: np.videoId) { oldValue, newValue in
                 handleTrackChange(from: oldValue, to: newValue)
             }
@@ -322,6 +142,215 @@ struct FullPlayerView: View {
         }
     }
 
+    /// The gradient behind everything: solid black, the cover's palette in card
+    /// mode, or the readable two-stop gradient with its glow.
+    @ViewBuilder
+    private var playerBackground: some View {
+        ZStack {
+        if settings.playerBackgroundStyle == .solid {
+            Color.black
+                .ignoresSafeArea()
+        } else if settings.playerStyle == .card {
+            // The cover's colour, brighter at the top and dark enough for
+            // white text from the middle down, where the controls sit.
+            let base = playerBackgroundColors.first ?? .black
+            LinearGradient(
+                stops: [
+                    .init(color: base.mix(with: .black, by: 0.15), location: 0),
+                    .init(color: base.mix(with: .black, by: 0.6), location: 0.55)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            .id(playerBackgroundColors)
+            .transition(.opacity)
+        } else {
+            LinearGradient(
+                colors: [
+                    readableBackgroundColors.first ?? Color(red: 0.15, green: 0.15, blue: 0.2),
+                    readableBackgroundColors.last ?? Color(red: 0.05, green: 0.05, blue: 0.08)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            // An overlay, not a ZStack sibling: on a screen narrower than
+            // 400 points the glow's fixed width would widen the player,
+            // shift it right and show the previous cover at the left edge.
+            .overlay {
+                Circle()
+                    .fill(readableBackgroundColors.first ?? .blue)
+                    .frame(width: 400, height: 400)
+                    .blur(radius: 120)
+                    .opacity(0.45)
+                    .offset(y: -150)
+            }
+            .ignoresSafeArea()
+            .id(playerBackgroundColors)
+            .transition(.opacity)
+        }
+        }
+        .animation(.easeInOut(duration: 0.8), value: playerBackgroundColors)
+    }
+
+    /// The canvas clip, dimmed, behind the cover and the lyrics.
+    @ViewBuilder
+    private var canvasBackdropLayer: some View {
+        // Canvas: the album's looping clip behind the cover and the
+        // lyrics, dimmed so white text keeps its contrast. A track
+        // without a clip leaves the gradient untouched.
+        if settings.showCanvas,
+           settings.playerBackgroundStyle != .solid,
+           let videoId = np.videoId {
+            CanvasBackdrop(
+                videoId: videoId,
+                title: np.title,
+                artist: np.displayArtist,
+                album: np.albumTitle.isEmpty ? nil : np.albumTitle,
+                dim: 0.55
+            )
+            .ignoresSafeArea()
+        }
+
+    }
+
+    /// The cover pager: a full column in landscape, a short block in portrait.
+    @ViewBuilder
+    private func artworkLayer(_ geometry: GeometryProxy) -> some View {
+        if !showsCardCover, isLandscape {
+            // The cover fills the left column up to the screen's edges and
+            // fades out sideways, under the start of the controls.
+            let insets = geometry.safeAreaInsets
+            let pageSize = CGSize(
+                width: landscapeCoverWidth(geometry),
+                height: geometry.size.height + artworkTopInset + insets.bottom
+            )
+            artworkPager(pageSize: pageSize)
+                .frame(width: pageSize.width, height: pageSize.height)
+                .compositingGroup()
+                .clipped()
+                .mask {
+                    LinearGradient(
+                        stops: [
+                            .init(color: .white, location: 0),
+                            .init(color: .white, location: 0.6),
+                            .init(color: .clear, location: 1)
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                }
+                .offset(x: -insets.leading, y: -artworkTopInset)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .opacity(showsKaraoke ? 0 : 1)
+        } else if !showsCardCover {
+            // Shorter while the speed dial is open, so the title stays on the faded part.
+            let artworkHeight = (geometry.size.height + artworkTopInset) * (showsSpeedDial ? 0.48 : 0.58)
+            // Clipped to the screen width, so a neighbour shows only the
+            // part dragged in from the edge.
+            artworkPager(pageSize: CGSize(width: geometry.size.width, height: artworkHeight))
+                .frame(maxWidth: .infinity)
+                .frame(height: artworkHeight)
+                .compositingGroup()
+                .clipped()
+                .mask {
+                    LinearGradient(
+                        stops: [
+                            .init(color: .white, location: 0),
+                            .init(color: .white, location: 0.62),
+                            .init(color: .clear, location: 1)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
+                .offset(y: -artworkTopInset)
+                .frame(maxHeight: .infinity, alignment: .top)
+                .opacity(showsKaraoke ? 0 : 1)
+        }
+
+    }
+
+    /// Handle, artwork, title and controls, laid out for the current orientation.
+    @ViewBuilder
+    private func playerContent(_ geometry: GeometryProxy) -> some View {
+        if isLandscape {
+            // Two columns, so nothing has to shrink below a usable size:
+            // the cover (and an open panel) on the left, the controls on the right.
+            HStack(spacing: 24) {
+                artworkArea(pageWidth: showsCardCover ? geometry.size.width / 2 : landscapeCoverWidth(geometry))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .overlay { playerPanel }
+
+                VStack(spacing: 0) {
+                    playerHandle
+
+                    titleAndActionsRow
+                        .padding(.bottom, 12)
+                        .opacity(showsKaraoke ? 0 : 1)
+
+                    Spacer(minLength: 0)
+
+                    controlsSection
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .padding(.horizontal, 16)
+        } else {
+            VStack(spacing: 0) {
+                playerHandle
+
+                VStack(spacing: 0) {
+                    artworkArea(pageWidth: geometry.size.width)
+
+                    titleAndActionsRow
+                        .padding(.horizontal, 32)
+                        .padding(.top, 20)
+                        .padding(.bottom, 16)
+                        .opacity(showsKaraoke ? 0 : 1)
+
+                    // Hidden under an open panel: the glass is see-through.
+                    PlayerLyricPreview(lines: syncedLyrics)
+                        .opacity(showQueue || showLyrics ? 0 : 1)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                // No bottom padding: the panel covers the lyric line and the
+                // progress bar's touch area leaves the gap above its track.
+                .overlay {
+                    playerPanel
+                        .padding(.horizontal, 20)
+                }
+
+                controlsSection
+            }
+        }
+    }
+
+    /// Sized and offset like the artwork, so the animation lands on the player
+    /// rather than sliding with the safe area.
+    private func sleepEndedOverlay(_ geometry: GeometryProxy) -> some View {
+        let size = CGSize(
+            width: geometry.size.width + 2 * Self.sleepOverlayBleed,
+            height: geometry.size.height + artworkTopInset
+        )
+        return SleepEndedOverlay(size: size)
+            .frame(width: size.width, height: size.height)
+            .offset(y: -artworkTopInset)
+    }
+
+    /// The lifted-cover transition, kept out of the body for the type checker.
+    @ViewBuilder
+    private var fullscreenCoverLayer: some View {
+        if showsFullscreenCover {
+            FullscreenCoverOverlay(
+                source: coverFrame.rect,
+                sourceCornerRadius: showsCardCover ? Self.cardCoverRadius : 0,
+                fadesBottom: !showsCardCover,
+                onClosed: { showsFullscreenCover = false },
+                cover: { cover(for: $0) }
+            )
+        }
+    }
     private func closePanelOrPlayer() {
         if showQueue {
             showQueue = false
