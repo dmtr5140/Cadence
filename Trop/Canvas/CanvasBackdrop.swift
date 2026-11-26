@@ -18,8 +18,9 @@ struct CanvasBackdrop: View {
     /// How dark the scrim over the video is; the lyrics need contrast.
     var dim: Double = 0.4
 
-    @State private var player: AVQueuePlayer?
+    @State private var player: AVPlayer?
     @State private var looper: AVPlayerLooper?
+    @State private var timeObserver: Any?
 
     var body: some View {
         ZStack {
@@ -36,6 +37,19 @@ struct CanvasBackdrop: View {
     private func load() async {
         stop()
         guard !videoId.isEmpty else { return }
+
+        // A moment picked by hand wins over both automatic sources. Its link
+        // expires between launches, so it is resolved here every time.
+        if let pick = CanvasStore.youTubePick(for: videoId) {
+            guard let url = await CanvasYouTube.streamURL(for: pick.clipId) else { return }
+            let player = AVPlayer(playerItem: AVPlayerItem(url: url))
+            player.isMuted = true
+            player.preventsDisplaySleepDuringVideoPlayback = false
+            self.player = player
+            playWindow(pick, on: player)
+            return
+        }
+
         guard let url = await CanvasService.shared.canvas(videoId: videoId,
                                                           title: title,
                                                           artist: artist,
@@ -57,9 +71,29 @@ struct CanvasBackdrop: View {
     }
 
     private func stop() {
+        if let timeObserver, let player {
+            player.removeTimeObserver(timeObserver)
+        }
+        timeObserver = nil
         player?.pause()
         player = nil
         looper = nil
+    }
+
+    /// Plays the chosen window: seek to its start, then jump back when it ends.
+    private func playWindow(_ pick: CanvasStore.YouTubePick, on player: AVPlayer) {
+        let begin = CMTime(seconds: max(0, pick.start), preferredTimescale: 600)
+        let finish = pick.start + max(2, pick.length)
+        player.seek(to: begin, toleranceBefore: .zero, toleranceAfter: .zero)
+        timeObserver = player.addPeriodicTimeObserver(
+            forInterval: CMTime(seconds: 0.15, preferredTimescale: 600),
+            queue: .main
+        ) { time in
+            if time.seconds >= finish {
+                player.seek(to: begin, toleranceBefore: .zero, toleranceAfter: .zero)
+            }
+        }
+        player.play()
     }
 }
 
