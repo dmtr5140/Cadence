@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/banner.svg" width="100%" alt="Woof Music Plus: Better YouTube Music, native on iPhone" /> 
+<img src=".github/assets/banner.svg" width="100%" alt="Cadence: Better YouTube Music, native on iPhone" /> 
 
 P.S.: Currently under active development — bugs may occur, so stay tuned!
 
@@ -10,7 +10,7 @@ P.S.: Currently under active development — bugs may occur, so stay tuned!
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE.txt)
 [![Release](https://img.shields.io/github/v/release/dmtr5140/WoofMusicPlus/releases?include_prereleases&label=release)](https://github.com/dmtr5140/WoofMusicPlus/releases)
 
-**Make your YT Music experience significantly better. Based on WoofMusic (a Trop fork).**
+**Cadence — make your YT Music experience significantly better. Based on WoofMusic (a Trop fork).**
 It plays your favorite music ad-free and mixes tracks like a DJ.
 
 <img src=".github/assets/1.png" width="31%" alt="Home" />&nbsp;

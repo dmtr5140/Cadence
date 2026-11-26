@@ -66,7 +66,7 @@ jobs:
       - name: Upload iOS IPA artifact
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: WoofMusic-iOS
-          path: build/WoofMusic-*.ipa
+          name: Cadence-iOS
+          path: build/Cadence-*.ipa
           if-no-files-found: error
           retention-days: 7
