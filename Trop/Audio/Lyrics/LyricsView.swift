@@ -263,12 +263,32 @@ struct LyricsView: View {
     // MARK: - Header
 
     private var headerBar: some View {
-        HStack {
+        HStack(spacing: 10) {
             if !isKaraoke {
-                Text("Lyrics")
-                    .font(.title2.bold())
+                // Apple Music puts the sleeve and the track here, small and
+                // quiet: the lyrics are the screen, not a titled panel.
+                Group {
+                    if let image = np.thumbnailImage {
+                        image.resizable().scaledToFill()
+                    } else {
+                        Color.white.opacity(0.12)
+                    }
+                }
+                .frame(width: 40, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(np.title)
+                        .font(.system(size: 15, weight: .semibold))
+                        .lineLimit(1)
+                    Text(np.displayArtist)
+                        .font(.system(size: 13))
+                        .foregroundStyle(.white.opacity(0.6))
+                        .lineLimit(1)
+                }
+                .frame(maxWidth: 190, alignment: .leading)
             }
-            Spacer()
+            Spacer(minLength: 8)
             LyricsOptionsMenu {
                 Image(systemName: "ellipsis")
                     .font(.body.weight(.semibold))

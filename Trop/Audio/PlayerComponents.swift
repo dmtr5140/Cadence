@@ -150,14 +150,10 @@ struct PlayerPlayPauseButton: View {
 
     var body: some View {
         Button(action: action) {
-            // Filled white disc with a dark glyph, as in Apple Music and
-            // BitChord: the button reads as a solid circle, not a bare icon.
-            ZStack {
-                Circle().fill(.white)
-                PlayPauseGlyph(isPlaying: isPlaying, size: 30, color: .black)
-            }
-            .frame(width: 56, height: 56)
-            .contentShape(Circle())
+            // Apple Music draws a bare white glyph here, no disc behind it.
+            PlayPauseGlyph(isPlaying: isPlaying, size: 44, color: .white)
+                .frame(width: 56, height: 56)
+                .contentShape(Circle())
         }
         .buttonStyle(IconPressStyle(disc: .white))
         .accessibilityLabel(isPlaying ? "Pause" : "Play")
