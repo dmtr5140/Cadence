@@ -40,8 +40,8 @@ final class SourceRegistry {
 
     private init() {
         let raw = defaults.stringArray(forKey: Self.enabledKey) ?? []
-        enabled = Set(raw.compactMap(SourceID.init(rawValue:)))
-        if enabled.isEmpty { enabled = [.soundcloud] }
+        let stored = Set(raw.compactMap(SourceID.init(rawValue:)))
+        enabled = stored.isEmpty ? [.soundcloud] : stored
         mode = Mode(rawValue: defaults.string(forKey: Self.modeKey) ?? "") ?? .mixed
         only = SourceID(rawValue: defaults.string(forKey: Self.onlyKey) ?? "") ?? .soundcloud
     }
