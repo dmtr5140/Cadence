@@ -28,6 +28,12 @@ struct SourcesSettingsView: View {
                     Label("Поиск по источникам", systemImage: "magnifyingglass")
                 }
 
+                NavigationLink {
+                    ServiceAccountsView()
+                } label: {
+                    Label("Аккаунты сервисов", systemImage: "person.badge.key")
+                }
+
                 Picker("Режим", selection: $registry.mode) {
                     ForEach(SourceRegistry.Mode.allCases) { mode in
                         Text(mode.title).tag(mode)

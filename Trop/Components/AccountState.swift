@@ -158,6 +158,22 @@ final class AccountState {
         await fetchAccountInfo()
     }
 
+    /// Imports a session captured elsewhere — a cookies.txt exported from a
+    /// desktop browser. Google refuses its OAuth inside embedded webviews, so
+    /// this is the path that always works.
+    func importCookies(_ cookies: [String: String]) async {
+        let keys = ["SAPISID", "__Secure-3PAPISID", "__Secure-1PAPISID"]
+        guard let sapisid = keys.compactMap({ cookies[$0] }).first(where: { !$0.isEmpty }) else { return }
+        await cookieStore.save(
+            cookies: cookies,
+            sapisid: sapisid,
+            visitorData: cookies["VISITOR_INFO1_LIVE"],
+            dataSyncId: nil
+        )
+        await InnerTubeClient.tropShared.loadState(from: cookieStore)
+        await fetchAccountInfo()
+    }
+
     /// Removes this account from the list and moves to another saved one if
     /// there is one. Its library and downloads stay, for when it signs back in.
     func signOut() {
