@@ -106,8 +106,31 @@ struct SearchMusicIntent: ShowInAppSearchResultsIntent {
 // PlayPauseIntent and NextSongIntent live in Shared/NowPlayingShared.swift:
 // the widget extension compiles them too.
 
+struct PlayYourWaveIntent: AudioPlaybackIntent {
+    static var title: LocalizedStringResource = "Своя волна"
+    static var description = IntentDescription("Запускает станцию на основе понравившихся треков.")
+    static var openAppWhenRun = true
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        await AuthService.shared.loadPersistedSession()
+        switch await YourWave.play() {
+        case .started: return .result(dialog: "Включаю Свою волну.")
+        case .noLikes: return .result(dialog: "Пока нет понравившихся треков для Своей волны.")
+        case .libraryUnavailable: return .result(dialog: "Не удалось открыть медиатеку.")
+        case .cancelled: return .result(dialog: "Запуск Своей волны отменён.")
+        }
+    }
+}
+
 struct WoofMusicShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
+        AppShortcut(
+            intent: PlayYourWaveIntent(),
+            phrases: ["Включи Свою волну в \(.applicationName)", "Play Your Wave in \(.applicationName)"],
+            shortTitle: "Своя волна",
+            systemImageName: "waveform"
+        )
         AppShortcut(
             intent: ShuffleLikedSongsIntent(),
             phrases: [

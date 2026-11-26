@@ -22,6 +22,9 @@ struct HomeScreenView: View {
     var body: some View {
         NavigationStack(path: $router.homePath) {
             VStack(spacing: 0) {
+                YourWaveButton()
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 8)
                 Group {
                     if viewModel.isLoading {
                         ShimmerLoadingView()
