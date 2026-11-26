@@ -25,7 +25,7 @@ struct ShuffleLikedSongsIntent: AudioPlaybackIntent {
     }
 }
 
-/// "Play some music in Woof Music": resumes the queue, else shuffles liked songs.
+/// "Play some music in Cadence": resumes the queue, else shuffles liked songs.
 struct PlaySomethingIntent: AudioPlaybackIntent {
     static var title: LocalizedStringResource = "Play Some Music"
     static var description = IntentDescription("Resumes your queue, or shuffles your liked songs.")
@@ -38,14 +38,14 @@ struct PlaySomethingIntent: AudioPlaybackIntent {
         }
         let songs = (try? await DatabaseService.shared.fetchAllLikedSongs())?.toSongItems() ?? []
         guard !songs.isEmpty else {
-            return .result(dialog: "You have no liked songs yet. Say \"Play a song in Woof Music\" to search for one.")
+            return .result(dialog: "You have no liked songs yet. Say \"Play a song in Cadence\" to search for one.")
         }
         PlaybackQueue.playShuffled(songs, log: Log.nowPlaying, context: "intent.playSomething")
         return .result(dialog: "Shuffling your liked songs.")
     }
 }
 
-/// "Play a song in Woof Music": Siri asks what to play, then the app searches
+/// "Play a song in Cadence": Siri asks what to play, then the app searches
 /// YouTube Music and plays the first song, followed by its radio.
 struct PlayMusicIntent: AudioPlaybackIntent {
     static var title: LocalizedStringResource = "Play a Song or Artist"
@@ -67,24 +67,24 @@ struct PlayMusicIntent: AudioPlaybackIntent {
         } catch let error as URLError {
             // Usually offline.
             if error.code != .cancelled { Log.search.notice("Siri search failed: \(error)") }
-            return .result(dialog: "I couldn't search Woof Music right now.")
+            return .result(dialog: "I couldn't search Cadence right now.")
         } catch {
             Log.search.error("Siri search failed: \(error)")
-            return .result(dialog: "I couldn't search Woof Music right now.")
+            return .result(dialog: "I couldn't search Cadence right now.")
         }
 
         let song = sections.lazy.flatMap(\.items).compactMap { item -> SongItem? in
             if case .song(let song) = item { return song }
             return nil
         }.first
-        guard let song else { return .result(dialog: "I couldn't find \(text) in Woof Music.") }
+        guard let song else { return .result(dialog: "I couldn't find \(text) in Cadence.") }
 
         PlaybackQueue.playSingleWithRadio(song, log: Log.nowPlaying)
         return .result(dialog: "Playing \(song.title).")
     }
 }
 
-/// "Search in Woof Music", or "Search Woof Music for …": opens the Search tab
+/// "Search in Cadence", or "Search Cadence for …": opens the Search tab
 /// with the results. The system search schema lets Siri and Spotlight pass
 /// the words spoken after "for" as the search term.
 @AppIntent(schema: .system.search)

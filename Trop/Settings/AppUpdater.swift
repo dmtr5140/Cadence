@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Compares the installed version with the latest Woof Music release on GitHub.
+/// Compares the installed version with the latest Cadence release on GitHub.
 /// Releases carry no IPA, so an update only links to the release page.
 @MainActor
 @Observable
