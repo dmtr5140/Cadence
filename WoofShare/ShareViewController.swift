@@ -6,7 +6,8 @@
 import UIKit
 import UniformTypeIdentifiers
 
-/// Hands a shared link to Woof Music as woofmusic://open?url=<link>; the app decides what it points to.
+/// Hands a shared link to Cadence as woofmusic://open?url=<link>; the URL scheme keeps its old name
+/// so links already in the wild keep working.
 final class ShareViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -42,7 +43,7 @@ final class ShareViewController: UIViewController {
 
     /// An extension can't reach UIApplication.shared, but the app object is still at the end of the responder chain.
     /// Its open method is off limits to extension code, so it's looked up by name at run time.
-    // ponytail: not an official API. If iOS stops passing the link on, copy it and paste it in Woof Music's search instead.
+    // ponytail: not an official API. If iOS stops passing the link on, copy it and paste it into Cadence's search instead.
     private func open(_ url: URL) {
         typealias Open = @convention(c) (AnyObject, Selector, NSURL, NSDictionary, AnyObject?) -> Void
         let selector = NSSelectorFromString("openURL:options:completionHandler:")
