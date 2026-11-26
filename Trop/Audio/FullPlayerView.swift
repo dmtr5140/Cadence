@@ -668,25 +668,22 @@ struct FullPlayerView: View {
 
             Spacer()
 
-            HStack(spacing: 12) {
-                CanvasStageButton(
-                    videoId: np.videoId,
-                    title: np.title,
-                    artist: np.displayArtist,
-                    album: np.albumTitle.isEmpty ? nil : np.albumTitle
-                ) { showsCanvasStage = true }
-                if let videoId = np.videoId {
-                    DownloadedBadge(videoId: videoId, onArtwork: true)
-                        .id(videoId)
-                }
+            // Like and menu sit in tinted circles, close to the title block.
+            // The Canvas entry and the download badge live in the song menu:
+            // in Apple Music nothing else is in this row.
+            HStack(spacing: 10) {
                 PlayerLikeButton(isLiked: isLiked, flavor: currentLikeFlavor) {
                     guard let song = np.queueSongs.indices.contains(np.queueIndex) ? np.queueSongs[np.queueIndex] : nil else { return }
                     Task { await likeStore.toggle(song: song) }
                 }
+                .frame(width: 36, height: 36)
+                .background(.white.opacity(isLiked ? 0 : 0.14), in: Circle())
 
                 if np.queueSongs.indices.contains(np.queueIndex) {
                     PlayerSongMenu(song: np.queueSongs[np.queueIndex], onCollapse: { onCollapse() })
                         .equatable()
+                        .frame(width: 36, height: 36)
+                        .background(.white.opacity(0.14), in: Circle())
                 }
             }
         }
