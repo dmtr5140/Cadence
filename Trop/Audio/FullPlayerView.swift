@@ -608,7 +608,7 @@ struct FullPlayerView: View {
                         Task { await likeStore.toggle(song: song) }
                     }
                     if np.queueSongs.indices.contains(np.queueIndex) {
-                        PlayerSongMenu(song: np.queueSongs[np.queueIndex])
+                        PlayerSongMenu(song: np.queueSongs[np.queueIndex], onCollapse: { dismissCanvasStage() })
                             .frame(width: 36, height: 36)
                     }
                 }
