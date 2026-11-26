@@ -75,7 +75,7 @@ struct ServiceAccountsView: View {
                 Text("Сначала попробуй «Войти в YouTube»: приложение подставляет десктопный Safari и, если Google всё равно отвечает «браузер небезопасен», предлагает другой браузер в один тап.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                Text("Если Google упирается во всех профилях — импортируй cookies.txt. Файл можно выгрузить и на самом iPhone: войди в youtube.com в Safari, затем в приложении «Файлы» открой экспорт из расширения «Get cookies.txt». Компьютер не обязателен.")
+                Text("Если Google упирается во всех трёх профилях, остаётся cookies.txt. Его выгружают расширением «Get cookies.txt» в Chrome или Firefox на компьютере: на iPhone расширений с удобной выгрузкой cookie нет, так что это единственный путь, где ПК пока нужен.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .font(.footnote)
