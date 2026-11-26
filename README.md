@@ -121,7 +121,7 @@ It plays your favorite music ad-free and mixes tracks like a DJ.
 
 ## Install
 
-You need iOS 26 or later and a YouTube Music account. This project does not publish IPA files, so you build your own.
+You need iOS 26 or later and a YouTube Music account. This project publish IPA files, but you can build your own.
 
 1. Fork this repository.
 2. Open the **Actions** tab and run the **iPhone Build** workflow.
